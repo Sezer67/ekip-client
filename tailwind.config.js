@@ -13,7 +13,8 @@ module.exports = {
         light:'#f2f2f2',
       },
       boxShadow:{
-        "shadow-right":("5px 0 10px 0px #1D2639")
+        "shadow-right":("5px 0 10px 0px #1D2639"),
+        "bottom":("0 4px 2px -2px #1D2639")
       }
     },
   },
