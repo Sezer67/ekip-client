@@ -51,11 +51,8 @@ function App() {
     <div id="app" className="bg-light">
       <Suspense fallback={<Spin size="large" />}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-        <Routes>
           <Route
+            path="/"
             element={
               <Layout>
                 <ProtectedRoute isAuth={isAuth} />
@@ -63,11 +60,13 @@ function App() {
             }
           >
             <Route path="/" element={<DashboardPage />} />
+            
           </Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </Suspense>
     </div>
   );
 }
-
 export default App;

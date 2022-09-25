@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { gifs } from "../../constants";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { login } from "../../service/user.sevice";
 import { UserLoginType } from "../../types/user-service.types";
 import { FormValuesEnum } from "./login-page.config";
@@ -10,6 +10,12 @@ import * as userSlice from "../../redux/userSlice/userSlice";
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const userState = useAppSelector((state) => state.user);
+  useEffect(()=>{
+    if(userState.user.token)
+      navigate('/');
+  },[])
 
   const handleNotAccount = () => {
     navigate("/register");
