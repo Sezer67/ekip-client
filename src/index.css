@@ -1,17 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 #app {
@@ -29,7 +30,7 @@ code {
   height: 500px;
   border-radius: 50%;
   position: absolute;
-  opacity: .95;
+  opacity: 0.95;
   z-index: 0;
 }
 
@@ -37,5 +38,32 @@ code {
   width: 100%;
   height: 100vw;
   bottom: calc(30vw - 100vw);
+}
+.ant-notification-notice {
+  z-index: 999 !important;
+}
 
+.ant-menu > .ant-menu-item-selected,
+.ant-menu > .ant-menu-item {
+  height: auto !important;
+  padding-bottom: 5px !important;
+  padding-top: 5px !important;
+  color: #1d2639 !important;
+  font-size: large !important;
+  font-weight: 700;
+}
+.ant-menu > .ant-menu-item-selected > span {
+  padding-left: 10px !important;
+}
+.ant-menu > .ant-menu-item-selected {
+  background-color: #7b8ca6 !important;
+  color: white !important;
+  transition: all 0.4s ease !important;
+}
+
+.ant-menu > .ant-menu-item-selected::after {
+  border-right: 3px solid #1d2639 !important;
+}
+.ant-upload-list-picture-container > .ant-tooltip {
+  display: none !important;
 }

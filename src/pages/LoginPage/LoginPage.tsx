@@ -7,15 +7,16 @@ import { login } from "../../service/user.sevice";
 import { UserLoginType } from "../../types/user-service.types";
 import { FormValuesEnum } from "./login-page.config";
 import * as userSlice from "../../redux/userSlice/userSlice";
+import { setApiToken } from "../../axios.util";
+import { storageHelper } from "../../helpers";
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const userState = useAppSelector((state) => state.user);
-  useEffect(()=>{
-    if(userState.user.token)
-      navigate('/');
-  },[])
+  useEffect(() => {
+    if (userState.user.token) navigate("/");
+  }, [navigate, userState]);
 
   const handleNotAccount = () => {
     navigate("/register");
@@ -29,6 +30,10 @@ const LoginPage = () => {
     try {
       const { data } = await login(values);
       dispatch(userSlice.setUser(data));
+      if (data.token) {
+        setApiToken(data.token);
+        storageHelper.setKeyWithValue("token", data.token);
+      }
       navigate("/");
     } catch (error) {
       console.log(error);
