@@ -1,10 +1,21 @@
-import { Button, Input, InputNumber } from "antd";
+import { Button, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { imageHelper } from "../../helpers";
+import { useLocation, useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import { imageHelper, routeHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setSelectedProduct } from "../../redux/productSlice/productSlice";
+import {
+  addOrder,
+  setProducts,
+  setSelectedProduct,
+} from "../../redux/productSlice/productSlice";
 import { productService } from "../../service";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { productsSliderSettings } from "./product.config";
+import ProductCard from "../../components/Products/ProductCard";
+import { api_url } from "../../configs/url.config";
+import { setNotification } from "../../redux/userSlice/notificationSlice";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
@@ -15,6 +26,7 @@ const Product = () => {
   );
 
   const location = useLocation();
+  const navigation = useNavigate();
   const dispatch = useAppDispatch();
   useEffect(() => {
     const getProductById = async (id: string) => {
@@ -22,6 +34,19 @@ const Product = () => {
       setTotalPrice(data.price.toString());
       dispatch(setSelectedProduct(data));
     };
+
+    const getProdutcsByCategories = async (categories: string) => {
+      const queryUrl = routeHelper.addQueryToUrl(`${api_url}/product`, {
+        categories,
+      });
+
+      const { data } = await productService.getProducts(queryUrl);
+      dispatch(setProducts(data));
+    };
+    if (productState.products.length < 1 && productState.selectedProduct.id) {
+      const categories = productState.selectedProduct.categories.join(",");
+      getProdutcsByCategories(categories);
+    }
 
     if (!productState.selectedProduct.id) {
       const productId = location.pathname.split("product/")[1];
@@ -40,15 +65,63 @@ const Product = () => {
   };
 
   const handleClick = async () => {
-    // sipariş verme fonk.
+    debugger;
+    if (
+      productState.selectedProduct.stock < 1 ||
+      piece > productState.selectedProduct.stock
+    ) {
+      dispatch(
+        setNotification({
+          message: "Siparişiniz Alınamadı",
+          description: "Stokta bu kadar ürün mevcut değil",
+          isNotification: true,
+          placement: "top",
+          status: "error",
+        })
+      );
+      routeHelper.navigation(navigation, "/");
+      return;
+    }
+    try {
+      const { data } = await productService.createOrder({
+        piece,
+        productId: productState.selectedProduct.id,
+      });
+      dispatch(addOrder(data));
+      dispatch(
+        setSelectedProduct({
+          ...productState.selectedProduct,
+          stock: productState.selectedProduct.stock - piece,
+        })
+      );
+      dispatch(
+        setNotification({
+          message: "Siparişiniz Alındı",
+          description: "Satıcının onay vermesini bekleyiniz",
+          isNotification: true,
+          placement: "top",
+          status: "success",
+        })
+      );
+    } catch (error: any) {
+      dispatch(
+        setNotification({
+          message: "Siparişiniz Alınamadı",
+          description: error.response.data.message[0],
+          isNotification: true,
+          placement: "top",
+          status: "error",
+        })
+      );
+    }
   };
 
   return (
-    <div className="m-3 min-h-[87vh] flex justify-center items-center">
+    <div className="m-3 min-h-[87vh] flex flex-col justify-center items-center">
       <div className="flex flex-row justify-start items-stretch flex-wrap">
         {productState.selectedProduct.images &&
           productState.selectedProduct.images.length > 0 && (
-            <div className="w-full md:w-1/2 lg:w-[600px] p-4 bg-white rounded-md">
+            <div className="w-full md:w-1/2 lg:max-w-[800px] p-4 bg-white rounded-md">
               <img
                 src={imageHelper.getBase64(
                   productState.selectedProduct.images[0]
@@ -116,10 +189,11 @@ const Product = () => {
                     <span className="text-primary font-semibold ">Satıcı</span>
                   </td>
                   <td className="text-secondary font-semibold text-lg">
-                    {productState.selectedProduct.ownerId.firstName.concat(
-                      " ",
-                      productState.selectedProduct.ownerId.lastName
-                    )}
+                    {productState.selectedProduct.ownerId &&
+                      productState.selectedProduct.ownerId.firstName.concat(
+                        " ",
+                        productState.selectedProduct.ownerId.lastName
+                      )}
                   </td>
                 </tr>
                 <tr className="w-full border-b h-10">
@@ -154,6 +228,25 @@ const Product = () => {
           </div>
         </div>
       </div>
+
+      {productState.products.length > 0 && (
+        <div className="container mx-auto p-4 mt-6">
+          <h3 className="text-primary font-bold  underline-offset-1 text-xl">
+            BENZER ÜRÜNLER
+          </h3>
+          <Slider {...productsSliderSettings}>
+            {productState.products
+              .filter(
+                (product) => product.id !== productState.selectedProduct.id
+              )
+              .map((product) => (
+                <div key={product.id}>
+                  <ProductCard product={product} />
+                </div>
+              ))}
+          </Slider>
+        </div>
+      )}
     </div>
   );
 };

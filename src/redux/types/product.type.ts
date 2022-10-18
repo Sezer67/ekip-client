@@ -1,5 +1,10 @@
 import { UserStateType, UserType } from "./user.types";
 
+type UserFilterVariableType = Omit<
+  UserType,
+  "token" | "profilePicture" | "username" | "email" | "role"
+>;
+
 export type ProductStateType = {
   id: string;
   name: string;
@@ -9,8 +14,17 @@ export type ProductStateType = {
   categories: string[];
   createdAt: Date;
   showCount: number;
-  ownerId: Omit<
-    UserType,
-    "token" | "profilePicture" | "username" | "email" | "role"
-  >;
+  ownerId: UserFilterVariableType;
+};
+
+export type OrderStateType = {
+  id: string;
+  isAccept: boolean;
+  isAnswer: boolean;
+  createdAt: Date;
+  answerAt: Date | null;
+  piece: number;
+  customerId: UserFilterVariableType;
+  ownerId: UserFilterVariableType;
+  productId: ProductStateType;
 };

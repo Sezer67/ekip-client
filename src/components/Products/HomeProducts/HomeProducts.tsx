@@ -1,3 +1,4 @@
+import { Empty } from "antd";
 import React, { useEffect, useState } from "react";
 import { icons } from "../../../constants";
 import { useAppWindowSize } from "../../../redux/hooks";
@@ -44,6 +45,19 @@ const HomeProducts: React.FC<{ products: ProductStateType[] }> = ({
   const handlePrevPage = () => {
     setPage(page - 1);
   };
+
+  if (products.length < 1) {
+    return (
+      <div className="mt-5 flex justify-center">
+        <Empty
+          description="Ürün Yok"
+          image={icons.empty}
+          imageStyle={{ width: "64px", height: "64px" }}
+          style={{ fontSize: "16px", fontWeight: "700" }}
+        />
+      </div>
+    );
+  }
 
   // width e göre ayarlanacak
   return (

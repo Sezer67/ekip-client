@@ -27,7 +27,7 @@ const MyProducts = () => {
       </h3>
       <div className="flex flex-row flex-wrap">
         {productState.products.map((product) => (
-          <ProductCard product={product} editable />
+          <ProductCard product={product} key={product.id} editable />
         ))}
       </div>
     </div>

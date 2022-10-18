@@ -10,22 +10,19 @@ import {
 } from "./register-page.config";
 
 const RegisterPage: React.FC = () => {
-
   const navigate = useNavigate();
 
   const handleOnFinish = async (values: FormValuesType) => {
-    try{
-      const {data} = await register(values);
-      navigate('/login');
-    }catch(error){
-
-    }
+    try {
+      const { data } = await register(values);
+      navigate("/login");
+    } catch (error) {}
   };
 
   return (
     <div className="relative w-full h-full">
       <div className="h-full flex justify-center items-center">
-        <div className="w-1/2 z-10 flex justify-center items-center p-6 border border-primary rounded-md shadow-lg shadow-pink">
+        <div className="w-full mx-6 sm:mx-0 sm:w-1/2 z-10 flex justify-center items-center p-6 border border-primary rounded-md shadow-lg shadow-pink">
           <Form
             className="w-full"
             layout="vertical"

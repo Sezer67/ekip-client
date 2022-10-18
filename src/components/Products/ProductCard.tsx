@@ -24,7 +24,8 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
 
   const handleFavorite = () => {};
   const handleShow = () => {
-    routeHelper.navigation(navigate, `product/${product.id}`);
+    if (editable) return;
+    routeHelper.navigation(navigate, `/product/${product.id}`);
     dispatch(setSelectedProduct(product));
   };
   return (

@@ -29,13 +29,19 @@ const MySider = () => {
       label: "Yeni Ürün",
       key: "/new-product",
       icon: <img src={icons.product_add} alt="bla" />,
-      onClick: () => routeHelper.navigation(navigate, "new-product"),
+      onClick: () => routeHelper.navigation(navigate, "/new-product"),
     },
     {
       label: "Ürünlerim",
       key: "/my-products",
       icon: <img src={icons.product} alt="bla" />,
-      onClick: () => routeHelper.navigation(navigate, "my-products"),
+      onClick: () => routeHelper.navigation(navigate, "/my-products"),
+    },
+    {
+      label: "Müşteri Siparişleri",
+      key: "/my-customer-orders",
+      icon: <img src={icons.accept} alt="bla" />,
+      onClick: () => routeHelper.navigation(navigate, "/my-customer-orders"),
     },
   ];
 

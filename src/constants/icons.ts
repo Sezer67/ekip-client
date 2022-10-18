@@ -12,7 +12,11 @@ import edit from "../assets/icons/edit.png";
 import shopping_bag from "../assets/icons/shopping-bag.png";
 import wallet from "../assets/icons/wallet.png";
 import supplier from "../assets/icons/inventory.png";
+import empty from "../assets/icons/empty.png";
+import accept from "../assets/icons/accept.png";
 export {
+  accept,
+  empty,
   wallet,
   supplier,
   shopping_bag,

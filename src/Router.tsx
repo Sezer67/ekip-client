@@ -25,6 +25,10 @@ const AddProduct = React.lazy(() => import("./pages/AddProduct/AddProduct"));
 const EditProduct = React.lazy(() => import("./pages/EditProduct/EditProduct"));
 const MyProducts = React.lazy(() => import("./pages/MyProducts/MyProducts"));
 const Product = React.lazy(() => import("./pages/Product/Product"));
+const MyOrders = React.lazy(() => import("./pages/MyOrders/MyOrders"));
+const MyCustomerOrders = React.lazy(
+  () => import("./pages/MyCustomerOrders/MyCustomerOrders")
+);
 
 function App() {
   const dispatch = useAppDispatch();
@@ -92,11 +96,19 @@ function App() {
               <>
                 <Route path="/new-product" element={<AddProduct />} />
                 <Route path="/my-products" element={<MyProducts />} />
-                <Route path="product/edit/:id" element={<EditProduct />} />
+                <Route path="/product/edit/:id" element={<EditProduct />} />
+                <Route
+                  path="/my-customer-orders"
+                  element={<MyCustomerOrders />}
+                />
               </>
             )}
 
             <Route path="/product">
+              <Route path=":id" element={<Product />} />
+            </Route>
+            <Route path="/my-orders">
+              <Route index element={<MyOrders />} />
               <Route path=":id" element={<Product />} />
             </Route>
           </Route>

@@ -16,4 +16,9 @@ export type CreateProductType = {
   categories: string[];
 };
 
+export type CreateOrderType = {
+  productId: string;
+  piece: number;
+};
+
 export type ProductKeysType = keyof ProductStateType;

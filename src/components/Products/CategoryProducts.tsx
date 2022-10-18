@@ -1,9 +1,7 @@
+import { Empty } from "antd";
 import React, { useEffect } from "react";
-import { api_url } from "../../configs/url.config";
-import { routeHelper } from "../../helpers";
+import { icons } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setProducts } from "../../redux/productSlice/productSlice";
-import { productService } from "../../service";
 import { PropsType } from "./category-product.config";
 import ProductCard from "./ProductCard";
 
@@ -27,13 +25,22 @@ const CategoryProducts: React.FC<PropsType> = ({ products }) => {
     // seklmelerde 1 er kez gezinip tüm bu componentler renderlanınca her değişimde hepsi tekrar render lanıyor.
   }, [dispatch]);
 
+  if (products.length < 1) {
+    <div className="mt-5 flex justify-center">
+      <Empty
+        description="Ürün Yok"
+        image={icons.empty}
+        imageStyle={{ width: "64px", height: "64px" }}
+        style={{ fontSize: "16px", fontWeight: "700" }}
+      />
+    </div>;
+  }
+
   return (
     <div className="px-4 flex flex-row flex-wrap">
-      {products.length > 0
-        ? products.map((product) => {
-            return <ProductCard product={product} key={product.id} />;
-          })
-        : null}
+      {products.map((product) => {
+        return <ProductCard product={product} key={product.id} />;
+      })}
     </div>
   );
 };

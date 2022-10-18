@@ -67,3 +67,15 @@ code {
 .ant-upload-list-picture-container > .ant-tooltip {
   display: none !important;
 }
+.ant-table-thead,
+.ant-table-thead > .ant-table-cell {
+  background-color: #1d2639 !important;
+}
+.ant-table-thead > tr > th {
+  color: #f2f2f2 !important;
+  font-weight: 700 !important;
+}
+
+.ant-table-tbody > .ant-table-cell {
+  background-color: #f2f2f2;
+}

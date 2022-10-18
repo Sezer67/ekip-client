@@ -1,3 +1,4 @@
 import gifs from "./gif";
 import * as icons from "./icons";
-export { gifs, icons };
+import * as images from "./images";
+export { gifs, icons, images };
