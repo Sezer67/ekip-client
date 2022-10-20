@@ -1,3 +1,3 @@
 import * as roleEnum from "./role.enum";
-
-export { roleEnum };
+import * as pathEnum from "./path.enum";
+export { roleEnum, pathEnum };

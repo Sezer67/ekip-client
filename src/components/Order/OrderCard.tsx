@@ -15,16 +15,16 @@ type PropsType = {
 const OrderCard: React.FC<PropsType> = ({ order }) => {
   const dispatch = useAppDispatch();
 
-  let bg = "bg-white";
+  let bg = "bg-slate-50";
   let orderStatus = "Satıcıdan Onay Bekleniyor";
   let actionButtonText = "İPTAL ET";
   if (order.isAnswer) {
     actionButtonText = "SİL";
     if (order.isAccept) {
-      bg = "bg-green-400";
+      bg = "bg-green-100";
       orderStatus = "Sipariş Onaylandı";
     } else {
-      bg = "bg-red-400";
+      bg = "bg-red-100";
       orderStatus = "Sipariş Reddedildi";
     }
   }
@@ -58,56 +58,57 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
   return (
     <div className={`w-full mt-6 py-4 px-7 rounded-sm shadow-sm ${bg}`}>
       <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center justify-between">
-          <div className="flex flex-row items-center mr-6">
-            {order.productId.images && (
-              <div className=" flex justify-center items-center mr-6">
-                <img
-                  src={imageHelper.getBase64(order.productId.images[0])}
-                  alt=""
-                  className="w-14 h-14 object-contain"
-                />
-              </div>
-            )}
-            <div className="flex flex-col">
-              <span className="text-orange font-semibold text-lg">
-                {order.productId.name.toUpperCase()}
+        <div className="flex flex-row items-center mr-6">
+          {order.productId.images && (
+            <div className=" flex justify-center items-center mr-6">
+              <img
+                src={imageHelper.getBase64(order.productId.images[0])}
+                alt=""
+                className="w-14 h-14 object-contain"
+              />
+            </div>
+          )}
+          <div className="flex flex-col">
+            <span className="text-orange font-semibold text-lg">
+              {order.productId.name.toUpperCase()}
+            </span>
+            <div className="flex flex-row space-x-3">
+              <span className="text-secondary  font-mono font-semibold">
+                {order.piece} adet
               </span>
-              <div className="flex flex-row space-x-3">
-                <span className="text-secondary font-mono font-semibold">
-                  {order.piece} adet
-                </span>
 
-                <span className="text-secondary font-mono font-semibold">
-                  {order.piece * order.productId.price} ₺
-                </span>
-              </div>
+              <span className="text-secondary whitespace-nowrap font-mono font-semibold">
+                {order.piece * order.productId.price} ₺
+              </span>
             </div>
           </div>
-          <Tooltip title="Sipariş Durumu">
-            <span className="text-sm text-thirdy">{orderStatus}</span>
-          </Tooltip>
         </div>
-        <div className="flex flex-col space-y-2">
-          <Tooltip placement="right" title="Sipariş Tarihi">
-            <span className="whitespace-nowrap font-extrabold">
-              {moment(order.createdAt).format("DD/MM/YYYY HH:mm")}
-            </span>
+
+        <div className="flex flex-row items-center space-x-6">
+          <Tooltip title="Sipariş Durumu">
+            <span className="text-sm text-primary">{orderStatus}</span>
           </Tooltip>
-          <Tooltip placement="right" title="Satıcı Yanıt Tarihi">
-            <span className="whitespace-nowrap font-extrabold">
-              {order.answerAt
-                ? moment(order.answerAt).format("DD/MM/YYYY HH:mm")
-                : "Bekleniyor"}
-            </span>
-          </Tooltip>
-          <Button
-            onClick={handleDelete}
-            type="primary"
-            className="!bg-red-500 !border-0"
-          >
-            {actionButtonText}
-          </Button>
+          <div className="flex flex-col space-y-2">
+            <Tooltip placement="right" title="Sipariş Tarihi">
+              <span className="whitespace-nowrap font-extrabold">
+                {moment(order.createdAt).format("DD/MM/YYYY HH:mm")}
+              </span>
+            </Tooltip>
+            <Tooltip placement="right" title="Satıcı Yanıt Tarihi">
+              <span className="whitespace-nowrap font-extrabold">
+                {order.answerAt
+                  ? moment(order.answerAt).format("DD/MM/YYYY HH:mm")
+                  : "Bekleniyor"}
+              </span>
+            </Tooltip>
+            <Button
+              onClick={handleDelete}
+              type="primary"
+              className="!bg-red-500 !border-0"
+            >
+              {actionButtonText}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

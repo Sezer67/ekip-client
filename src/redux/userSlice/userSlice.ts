@@ -10,6 +10,7 @@ const initialState: UserStateType = {
     lastName: "",
     username: "",
     email: "",
+    balance: 0,
     role: Role.Customer,
     profilePicture: null,
     token: undefined,
@@ -26,6 +27,15 @@ const userSlice = createSlice({
     ) => {
       state.user = { ...action.payload };
     },
+    setUserMinusBalance: (
+      state,
+      action: PayloadAction<{ balance: number }>
+    ) => {
+      state.user.balance = state.user.balance - action.payload.balance;
+    },
+    setUserPlusBalance: (state, action: PayloadAction<{ balance: number }>) => {
+      state.user.balance = state.user.balance + action.payload.balance;
+    },
     logout: (state: UserStateType, action) => {
       state.user = {
         id: "",
@@ -33,6 +43,7 @@ const userSlice = createSlice({
         lastName: "",
         username: "",
         email: "",
+        balance: 0,
         role: Role.Customer,
         profilePicture: null,
         token: undefined,
@@ -42,4 +53,5 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { setUser, logout } = userSlice.actions;
+export const { setUser, logout, setUserMinusBalance, setUserPlusBalance } =
+  userSlice.actions;

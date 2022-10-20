@@ -16,10 +16,13 @@ import { productsSliderSettings } from "./product.config";
 import ProductCard from "../../components/Products/ProductCard";
 import { api_url } from "../../configs/url.config";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
+import { pathEnum, roleEnum } from "../../enums";
+import { setUserMinusBalance } from "../../redux/userSlice/userSlice";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
   const categoryState = useAppSelector((state) => state.category);
+  const userState = useAppSelector((state) => state.user);
   const [piece, setPiece] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState<string>(
     (1 * productState.selectedProduct.price).toString()
@@ -65,7 +68,6 @@ const Product = () => {
   };
 
   const handleClick = async () => {
-    debugger;
     if (
       productState.selectedProduct.stock < 1 ||
       piece > productState.selectedProduct.stock
@@ -79,7 +81,7 @@ const Product = () => {
           status: "error",
         })
       );
-      routeHelper.navigation(navigation, "/");
+      routeHelper.navigation(navigation, pathEnum.Path.HOME);
       return;
     }
     try {
@@ -88,6 +90,11 @@ const Product = () => {
         productId: productState.selectedProduct.id,
       });
       dispatch(addOrder(data));
+      dispatch(
+        setUserMinusBalance({
+          balance: piece * productState.selectedProduct.price,
+        })
+      );
       dispatch(
         setSelectedProduct({
           ...productState.selectedProduct,
@@ -107,7 +114,7 @@ const Product = () => {
       dispatch(
         setNotification({
           message: "Siparişiniz Alınamadı",
-          description: error.response.data.message[0],
+          description: error.response.data.message,
           isNotification: true,
           placement: "top",
           status: "error",
@@ -142,14 +149,20 @@ const Product = () => {
             <table className="w-full">
               <tbody className="w-full">
                 <tr className="border-b w-full h-10">
-                  <td className="pl-3">
-                    <span className="text-orange font-semibold text-xl">
+                  <td
+                    className={`pl-3 ${
+                      userState.user.role !== roleEnum.Role.Customer
+                    }  absolute`}
+                  >
+                    <span className="text-orange font-semibold text-xl ">
                       {productState.selectedProduct.name.toUpperCase()}
                     </span>
                   </td>
-                  <td className="">
-                    <button className="text-red-500">Favorilere Ekle</button>
-                  </td>
+                  {userState.user.role === roleEnum.Role.Customer && (
+                    <td className="">
+                      <button className="text-red-500">Favorilere Ekle</button>
+                    </td>
+                  )}
                 </tr>
                 <tr className="border-b w-full h-10">
                   <td className="pl-3">
@@ -164,6 +177,7 @@ const Product = () => {
                   </td>
                   <td className="w-1/2">
                     <InputNumber
+                      disabled={userState.user.role !== roleEnum.Role.Customer}
                       className="!w-full"
                       placeholder="Adet"
                       value={piece}
@@ -215,14 +229,16 @@ const Product = () => {
                     })}
                   </td>
                 </tr>
-                <tr className="w-full h-10">
-                  <td />
-                  <td className="float-right mt-3">
-                    <Button type="primary" onClick={handleClick}>
-                      Sipariş Ver
-                    </Button>
-                  </td>
-                </tr>
+                {userState.user.role === roleEnum.Role.Customer && (
+                  <tr className="w-full h-10">
+                    <td />
+                    <td className="float-right mt-3">
+                      <Button type="primary" onClick={handleClick}>
+                        Sipariş Ver
+                      </Button>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -230,22 +246,26 @@ const Product = () => {
       </div>
 
       {productState.products.length > 0 && (
-        <div className="container mx-auto p-4 mt-6">
-          <h3 className="text-primary font-bold  underline-offset-1 text-xl">
-            BENZER ÜRÜNLER
-          </h3>
-          <Slider {...productsSliderSettings}>
-            {productState.products
-              .filter(
-                (product) => product.id !== productState.selectedProduct.id
-              )
-              .map((product) => (
-                <div key={product.id}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
-          </Slider>
-        </div>
+        <>
+          <div className="container px-auto  mt-6">
+            <h3 className="text-primary font-bold  underline-offset-1 text-xl">
+              BENZER ÜRÜNLER
+            </h3>
+            <div className="">
+              <Slider {...productsSliderSettings}>
+                {productState.products
+                  .filter(
+                    (product) => product.id !== productState.selectedProduct.id
+                  )
+                  .map((product) => (
+                    <div key={product.id}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+              </Slider>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

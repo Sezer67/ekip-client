@@ -12,5 +12,6 @@ export type UserType = {
   email: string;
   profilePicture: string | null;
   role: Role;
+  balance: number;
   token: string | undefined;
 };

@@ -1,13 +1,18 @@
-import { Button, Empty, Table } from "antd";
+import { Button, Empty, Table, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { images } from "../../constants";
+import { convertHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setOrders } from "../../redux/productSlice/productSlice";
-import { OrderStateType } from "../../redux/types/product.type";
+import { setNotification } from "../../redux/userSlice/notificationSlice";
+import { setUserPlusBalance } from "../../redux/userSlice/userSlice";
 import { productService } from "../../service";
-import { OrderTableDataTypes } from "./my-customer-order.config";
+import {
+  OrderTableDataTypes,
+  StatusFilterDatas,
+} from "./my-customer-order.config";
 
 const MyCustomerOrders = () => {
   const [tableDatas, setTableDatas] = useState<OrderTableDataTypes[]>([]);
@@ -27,12 +32,14 @@ const MyCustomerOrders = () => {
       const data: OrderTableDataTypes[] = [];
       productState.orders.forEach((order) => {
         data.push({
+          id: order.id,
           actions: "",
           customer: order.customerId.firstName.concat(
             " ",
             order.customerId.lastName
           ),
           date: order.createdAt.toString(),
+          answerDate: order.answerAt?.toString(),
           name: order.productId.name,
           piece: order.piece,
           takings: order.piece * order.productId.price,
@@ -47,6 +54,43 @@ const MyCustomerOrders = () => {
     }
   }, [productState.orders]);
 
+  const handleUpdate = async (isAccept: boolean, id: string) => {
+    try {
+      const { data } = await productService.updateOrderById(id, { isAccept });
+      const orders = convertHelper.convertOrderStateAfterUpdateOrder(
+        data,
+        productState.orders
+      );
+      if (isAccept) {
+        const order = productState.orders.find((o) => o.id === id);
+        if (!order) return;
+        dispatch(
+          setUserPlusBalance({ balance: order.piece * order.productId.price })
+        );
+      }
+      dispatch(setOrders(orders));
+      dispatch(
+        setNotification({
+          message: "Güncelleme Başarılı",
+          description: `Sipariş ${isAccept ? "Onaylandı" : "Reddedildi"}`,
+          isNotification: true,
+          placement: "top",
+          status: "success",
+        })
+      );
+    } catch (error: any) {
+      dispatch(
+        setNotification({
+          message: "Güncelleme Başarısız",
+          description: error.message[0],
+          isNotification: true,
+          placement: "top",
+          status: "error",
+        })
+      );
+    }
+  };
+
   const columns: ColumnsType<OrderTableDataTypes> = [
     {
       title: "Ürün Adı",
@@ -60,6 +104,7 @@ const MyCustomerOrders = () => {
       title: "Adet",
       dataIndex: "piece",
       key: "piece",
+      sorter: (a, b) => a.piece - b.piece,
     },
     {
       title: "Hasılat",
@@ -68,11 +113,14 @@ const MyCustomerOrders = () => {
       render: (value: number) => (
         <span className="font-mono whitespace-nowrap">{value} ₺</span>
       ),
+      sorter: (a, b) => a.takings - b.takings,
     },
     {
       title: "Sipariş Durumu",
       dataIndex: "status",
       key: "status",
+      filters: StatusFilterDatas,
+      onFilter: (value, record) => record.status === value,
     },
     {
       title: "Sipariş Tarihi",
@@ -88,6 +136,9 @@ const MyCustomerOrders = () => {
       title: "Müşteri",
       dataIndex: "customer",
       key: "customer",
+      render: (value) => (
+        <span className="text-secondary font-semibold">{value}</span>
+      ),
     },
     {
       title: "",
@@ -96,13 +147,23 @@ const MyCustomerOrders = () => {
       render: (value, record) => (
         <div className="flex flex-row flex-wrap justify-around">
           {record.status !== "ONAY BEKLENİYOR" ? (
-            <span />
+            <Tooltip title="İşlem Tarihiniz">
+              <span className="font-extrabold">
+                {moment(record.answerDate).format("DD/MM/YYYY HH:mm")}
+              </span>
+            </Tooltip>
           ) : (
             <>
-              <Button type="primary" className="!bg-red-500 !border-0">
+              <Button
+                onClick={() => handleUpdate(false, record.id)}
+                type="primary"
+                className="!bg-red-500 !border-0"
+              >
                 REDDET
               </Button>
-              <Button>ONAYLA</Button>
+              <Button onClick={() => handleUpdate(true, record.id)}>
+                ONAYLA
+              </Button>
             </>
           )}
         </div>
@@ -114,11 +175,18 @@ const MyCustomerOrders = () => {
   return (
     <div className="p-3">
       <h3 className="text-primary font-bold text-xl">
-        ONAY BEKLEYEN SİPARİŞLERİM
+        MÜŞTERİLERİMİN SİPARİŞLERİ
       </h3>
       {productState.orders.length > 0 ? (
         <div className="w-full   flex flex-col items-center">
           <Table
+            locale={{
+              triggerAsc: "Artan Sıralama",
+              triggerDesc: "Azalan Sıralama",
+              cancelSort: "Sıralamayı İptal Et",
+              filterReset: false,
+              filterConfirm: "Uygula",
+            }}
             scroll={{ x: true }}
             pagination={false}
             className="w-full"

@@ -21,4 +21,17 @@ export type CreateOrderType = {
   piece: number;
 };
 
+export type UpdateProductType = {
+  price?: number;
+  showCount?: number;
+  stock?: number;
+  images?: string[] | null;
+  categories?: string[];
+};
+
+export type SalesYearlyType = {
+  month: Date;
+  taking: number;
+};
+
 export type ProductKeysType = keyof ProductStateType;

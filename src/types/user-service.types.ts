@@ -15,13 +15,15 @@ export type UserLoginType = {
   password: string;
 };
 
-export type UserUpdateType = {
-  firstName: string;
-  lastName: string;
-  password?: string;
-  email: string;
-  role: Role;
-  profilePicture: string | null;
-};
+export type UserUpdateType =
+  | {
+      firstName: string;
+      lastName: string;
+      password?: string;
+      email: string;
+      role: Role;
+      profilePicture: string | null;
+    }
+  | { balance: number };
 
 export type ResponseLoginType = Omit<UserType, "password">;

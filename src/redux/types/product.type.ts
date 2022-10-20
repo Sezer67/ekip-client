@@ -1,8 +1,8 @@
-import { UserStateType, UserType } from "./user.types";
+import { UserType } from "./user.types";
 
 type UserFilterVariableType = Omit<
   UserType,
-  "token" | "profilePicture" | "username" | "email" | "role"
+  "token" | "profilePicture" | "username" | "email" | "role" | "balance"
 >;
 
 export type ProductStateType = {
@@ -24,7 +24,23 @@ export type OrderStateType = {
   createdAt: Date;
   answerAt: Date | null;
   piece: number;
+  totalPrice: number;
   customerId: UserFilterVariableType;
   ownerId: UserFilterVariableType;
   productId: ProductStateType;
 };
+export type SalesType = {
+  id: string;
+  answerAt: Date;
+  piece: number;
+  totalPrice: number;
+  customerId: UserFilterVariableType;
+  ownerId: UserFilterVariableType;
+  productId: ProductStateType;
+};
+export type SalesStateType = {
+  sales: SalesType[];
+  count: number;
+  filterTotalTaking: number;
+};
+export type SalesResultType = SalesStateType;

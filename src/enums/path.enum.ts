@@ -1,0 +1,15 @@
+export enum Path {
+  LOGIN = "/login",
+  REGISTER = "/register",
+  HOME = "/",
+  PROFILE = "/profile",
+  NEW_PRODUCT = "/new-product",
+  MY_PRODUCT = "/my-products",
+  PRODUCT = "/product",
+  PRODUCT_EDIT_QUERY_ID = "/product/edit",
+  SELLER_ORDER = "/my-customer-orders",
+  CUSTOMER_ORDER = "/my-orders",
+  BALANCE = "/my-balance",
+  SALES = "/sales",
+  NOT_FOUND = "*",
+}

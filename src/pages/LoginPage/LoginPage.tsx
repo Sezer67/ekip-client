@@ -9,17 +9,18 @@ import { FormValuesEnum } from "./login-page.config";
 import * as userSlice from "../../redux/userSlice/userSlice";
 import { setApiToken } from "../../axios.util";
 import { storageHelper } from "../../helpers";
+import { pathEnum } from "../../enums";
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const userState = useAppSelector((state) => state.user);
   useEffect(() => {
-    if (userState.user.token) navigate("/");
+    if (userState.user.token) navigate(pathEnum.Path.HOME);
   }, [navigate, userState]);
 
   const handleNotAccount = () => {
-    navigate("/register");
+    navigate(pathEnum.Path.REGISTER);
   };
 
   const handleOnFinish = async (values: UserLoginType) => {
@@ -34,7 +35,7 @@ const LoginPage = () => {
         setApiToken(data.token);
         storageHelper.setKeyWithValue("token", data.token);
       }
-      navigate("/");
+      navigate(pathEnum.Path.HOME);
     } catch (error) {
       console.log(error);
     }

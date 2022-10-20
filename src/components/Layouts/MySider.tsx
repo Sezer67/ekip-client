@@ -3,6 +3,7 @@ import { ItemType } from "antd/lib/menu/hooks/useItems";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { icons } from "../../constants";
+import { pathEnum } from "../../enums";
 import { Role } from "../../enums/role.enum";
 import { routeHelper } from "../../helpers";
 import { useAppSelector } from "../../redux/hooks";
@@ -16,47 +17,51 @@ const MySider = () => {
   const sellerMenuItem: ItemType[] = [
     {
       label: "Ürünler",
-      key: "/",
+      key: pathEnum.Path.HOME,
       icon: <img src={icons.product} alt="bla" className="" />,
-      onClick: () => routeHelper.navigation(navigate, "/"),
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.HOME),
     },
     {
       label: "Satışlarım",
-      key: "/sales",
+      key: pathEnum.Path.SALES,
       icon: <img src={icons.sales} alt="bla" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.SALES),
     },
     {
       label: "Yeni Ürün",
-      key: "/new-product",
+      key: pathEnum.Path.NEW_PRODUCT,
       icon: <img src={icons.product_add} alt="bla" />,
-      onClick: () => routeHelper.navigation(navigate, "/new-product"),
+      onClick: () =>
+        routeHelper.navigation(navigate, pathEnum.Path.NEW_PRODUCT),
     },
     {
       label: "Ürünlerim",
-      key: "/my-products",
+      key: pathEnum.Path.MY_PRODUCT,
       icon: <img src={icons.product} alt="bla" />,
-      onClick: () => routeHelper.navigation(navigate, "/my-products"),
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.MY_PRODUCT),
     },
     {
       label: "Müşteri Siparişleri",
-      key: "/my-customer-orders",
+      key: pathEnum.Path.SELLER_ORDER,
       icon: <img src={icons.accept} alt="bla" />,
-      onClick: () => routeHelper.navigation(navigate, "/my-customer-orders"),
+      onClick: () =>
+        routeHelper.navigation(navigate, pathEnum.Path.SELLER_ORDER),
     },
   ];
 
   const customerMenuItem: ItemType[] = [
     {
       label: "Ürünler",
-      key: "/",
+      key: pathEnum.Path.HOME,
       icon: <img src={icons.product} alt="bla" className="" />,
-      onClick: () => routeHelper.navigation(navigate, "/"),
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.HOME),
     },
     {
       label: "Siparişlerim",
-      key: "/my-orders",
+      key: pathEnum.Path.CUSTOMER_ORDER,
       icon: <img src={icons.shopping_bag} alt="" />,
-      onClick: () => routeHelper.navigation(navigate, "/my-orders"),
+      onClick: () =>
+        routeHelper.navigation(navigate, pathEnum.Path.CUSTOMER_ORDER),
     },
     {
       label: "Favorilerim",
@@ -66,9 +71,9 @@ const MySider = () => {
     },
     {
       label: "Bakiyem",
-      key: "/my-balance",
+      key: pathEnum.Path.BALANCE,
       icon: <img src={icons.wallet} alt="" />,
-      onClick: () => routeHelper.navigation(navigate, "/my-balance"),
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.BALANCE),
     },
   ];
 

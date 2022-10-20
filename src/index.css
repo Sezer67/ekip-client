@@ -67,15 +67,31 @@ code {
 .ant-upload-list-picture-container > .ant-tooltip {
   display: none !important;
 }
-.ant-table-thead,
-.ant-table-thead > .ant-table-cell {
-  background-color: #1d2639 !important;
-}
+
 .ant-table-thead > tr > th {
+  background-color: #1d2639 !important;
   color: #f2f2f2 !important;
   font-weight: 700 !important;
 }
 
 .ant-table-tbody > .ant-table-cell {
   background-color: #f2f2f2;
+}
+
+.ant-table-filter-dropdown-btns > .ant-btn-primary {
+  height: auto !important;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #7b8ca6 !important;
+  border: none;
+}
+.ant-table-filter-dropdown-btns > .ant-btn-primary > span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* react-credit-cards */
+.rccs {
+  margin: 0 !important;
 }

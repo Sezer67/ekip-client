@@ -12,6 +12,8 @@ import { setUser } from "./redux/userSlice/userSlice";
 import { categoryService } from "./service";
 import { getLoggedUser } from "./service/user.sevice";
 import notfound from "./assets/images/notfound.svg";
+import { pathEnum } from "./enums";
+import { Path } from "./enums/path.enum";
 const LoginPage = React.lazy(() => import("./pages/LoginPage/LoginPage"));
 const RegisterPage = React.lazy(
   () => import("./pages/RegisterPage/RegisterPage")
@@ -29,6 +31,8 @@ const MyOrders = React.lazy(() => import("./pages/MyOrders/MyOrders"));
 const MyCustomerOrders = React.lazy(
   () => import("./pages/MyCustomerOrders/MyCustomerOrders")
 );
+const Balance = React.lazy(() => import("./pages/Balance/Balance"));
+const Sales = React.lazy(() => import("./pages/Sales/Sales"));
 
 function App() {
   const dispatch = useAppDispatch();
@@ -67,7 +71,7 @@ function App() {
     if (categoryState.initialState.length < 1) {
       getCategories();
     }
-  }, [userState.user]);
+  }, [categoryState.initialState.length, dispatch, userState.user]);
 
   if (isAuth === undefined) {
     return (
@@ -82,40 +86,44 @@ function App() {
       <Suspense fallback={<Spin size="large" />}>
         <Routes>
           <Route
-            path="/"
+            path={Path.HOME}
             element={
               <Layout>
                 <ProtectedRoute isAuth={isAuth} />
               </Layout>
             }
           >
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path={Path.HOME} element={<DashboardPage />} />
+            <Route path={Path.PROFILE} element={<ProfilePage />} />
 
             {userState.user.role === Role.Seller && (
               <>
-                <Route path="/new-product" element={<AddProduct />} />
-                <Route path="/my-products" element={<MyProducts />} />
-                <Route path="/product/edit/:id" element={<EditProduct />} />
+                <Route path={Path.NEW_PRODUCT} element={<AddProduct />} />
+                <Route path={Path.MY_PRODUCT} element={<MyProducts />} />
                 <Route
-                  path="/my-customer-orders"
+                  path={`${Path.PRODUCT_EDIT_QUERY_ID}/:id`}
+                  element={<EditProduct />}
+                />
+                <Route
+                  path={Path.SELLER_ORDER}
                   element={<MyCustomerOrders />}
                 />
+                <Route path={Path.SALES} element={<Sales />} />
               </>
             )}
 
-            <Route path="/product">
+            <Route path={Path.PRODUCT}>
               <Route path=":id" element={<Product />} />
             </Route>
-            <Route path="/my-orders">
+            <Route path={Path.CUSTOMER_ORDER}>
               <Route index element={<MyOrders />} />
-              <Route path=":id" element={<Product />} />
             </Route>
+            <Route path={Path.BALANCE} element={<Balance />} />
           </Route>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path={Path.LOGIN} element={<LoginPage />} />
+          <Route path={Path.REGISTER} element={<RegisterPage />} />
           <Route
-            path="*"
+            path={Path.NOT_FOUND}
             element={
               <div>
                 <img src={notfound} alt="not found" />

@@ -7,6 +7,7 @@ import * as userSlice from "../../redux/userSlice/userSlice";
 import { useNavigate } from "react-router-dom";
 import { routeHelper, storageHelper } from "../../helpers";
 import { RoleTexts } from "./text";
+import { Path } from "../../enums/path.enum";
 const Header = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Header = () => {
       await logout();
       dispatch(userSlice.logout(""));
       storageHelper.setKeyWithValue("token", "");
-      routeHelper.navigation(navigate, "/login");
+      routeHelper.navigation(navigate, Path.LOGIN);
     } catch (error) {
       console.log(error);
     }
@@ -29,7 +30,7 @@ const Header = () => {
         {
           label: "Profile",
           key: 0,
-          onClick: () => routeHelper.navigation(navigate, "/profile"),
+          onClick: () => routeHelper.navigation(navigate, Path.PROFILE),
         },
         {
           label: "Log Out",

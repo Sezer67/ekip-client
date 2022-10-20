@@ -2,6 +2,7 @@ import { Button, Form, Input, Radio } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Path } from "../../enums/path.enum";
 import { register } from "../../service/user.sevice";
 import {
   FormValuesEnum,
@@ -15,7 +16,7 @@ const RegisterPage: React.FC = () => {
   const handleOnFinish = async (values: FormValuesType) => {
     try {
       const { data } = await register(values);
-      navigate("/login");
+      navigate(Path.LOGIN);
     } catch (error) {}
   };
 

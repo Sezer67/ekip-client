@@ -11,13 +11,19 @@ import {
   UploadFile,
   UploadProps,
 } from "antd";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { icons } from "../../constants";
 import { imageHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setSelectedProduct } from "../../redux/productSlice/productSlice";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { productService } from "../../service";
-import { CreateProductType } from "../../types/product-service.type";
+import {
+  CreateProductType,
+  UpdateProductType,
+} from "../../types/product-service.type";
 import Loading from "../Loading/Loading";
 import {
   FormDataType,
@@ -37,12 +43,27 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
   );
   const categoryState = useAppSelector((state) => state.category.initialState);
 
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const handleImageChange: UploadProps["onChange"] = ({ fileList }) => {
     fileList.forEach((a) => (a.status = "success"));
     setImageList(fileList);
   };
+
+  useEffect(() => {
+    const getProductById = async (id: string) => {
+      const { data } = await productService.getProductById(id);
+      dispatch(setSelectedProduct(data));
+      setIsLoading(false);
+    };
+
+    if (!selectedProduct.id) {
+      setIsLoading(true);
+      const productId = location.pathname.split("product/edit/")[1];
+      getProductById(productId);
+    }
+  }, [selectedProduct, dispatch, location.pathname]);
 
   const handleSave = async (values: FormDataType) => {
     // loading
@@ -55,10 +76,10 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
         imageUrls.push(uri.split("base64,")[1]);
       }
     }
-    debugger;
 
     values.categories.forEach((option, index) => {
-      categoryIds.push(option.value);
+      if (option.value) categoryIds.push(option.value);
+      else categoryIds.push(option as never);
     });
     const formData: CreateProductType = {
       categories: categoryIds,
@@ -70,6 +91,24 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
 
     try {
       if (isEdit) {
+        const editFormData: UpdateProductType = {
+          ...formData,
+        };
+        if (selectedProduct.images) {
+          selectedProduct.images.forEach((uri) => {
+            imageUrls.push(uri);
+          });
+        }
+        debugger;
+
+        if (imageUrls.length > 0) {
+          editFormData.images = imageUrls;
+        }
+        const { data } = await productService.updateProductById(
+          selectedProduct.id,
+          editFormData
+        );
+        dispatch(setSelectedProduct(data));
       } else {
         const { data } = await productService.createProdutc(formData);
       }
@@ -100,9 +139,12 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
     console.log(formData);
   };
 
+  if (isEdit && !selectedProduct.id) {
+    return <Loading loading={isLoading} />;
+  }
+
   return (
     <div className="relative">
-      <Loading loading={isLoading} />
       <Form
         layout="vertical"
         onFinish={handleSave}
@@ -206,7 +248,12 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
               <Input disabled value={selectedProduct.showCount} />
             </Form.Item>
             <Form.Item label="Satışa Sunulduğu Tarih">
-              <Input disabled value={selectedProduct.createdAt.toString()} />
+              <Input
+                disabled
+                value={moment(selectedProduct.createdAt.toString()).format(
+                  "DD/MM/YYYY HH:mm"
+                )}
+              />
             </Form.Item>
           </>
         )}

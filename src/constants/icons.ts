@@ -14,7 +14,9 @@ import wallet from "../assets/icons/wallet.png";
 import supplier from "../assets/icons/inventory.png";
 import empty from "../assets/icons/empty.png";
 import accept from "../assets/icons/accept.png";
+import cash from "../assets/icons/cash.png";
 export {
+  cash,
   accept,
   empty,
   wallet,
