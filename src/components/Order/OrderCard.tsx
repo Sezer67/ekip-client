@@ -2,7 +2,7 @@ import { Button, Tooltip } from "antd";
 import moment from "moment";
 import React from "react";
 import { imageHelper } from "../../helpers";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppWindowSize } from "../../redux/hooks";
 import { deleteOrder } from "../../redux/productSlice/productSlice";
 import { OrderStateType } from "../../redux/types/product.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
@@ -14,6 +14,8 @@ type PropsType = {
 
 const OrderCard: React.FC<PropsType> = ({ order }) => {
   const dispatch = useAppDispatch();
+
+  const size = useAppWindowSize();
 
   let bg = "bg-slate-50";
   let orderStatus = "Satıcıdan Onay Bekleniyor";
@@ -59,7 +61,7 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
     <div className={`w-full mt-6 py-4 px-7 rounded-sm shadow-sm ${bg}`}>
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center mr-6">
-          {order.productId.images && (
+          {size.width > 500 && order.productId.images && (
             <div className=" flex justify-center items-center mr-6">
               <img
                 src={imageHelper.getBase64(order.productId.images[0])}
@@ -85,9 +87,11 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
         </div>
 
         <div className="flex flex-row items-center space-x-6">
-          <Tooltip title="Sipariş Durumu">
-            <span className="text-sm text-primary">{orderStatus}</span>
-          </Tooltip>
+          {size.width > 500 && (
+            <Tooltip title="Sipariş Durumu">
+              <span className="text-sm text-primary">{orderStatus}</span>
+            </Tooltip>
+          )}
           <div className="flex flex-col space-y-2">
             <Tooltip placement="right" title="Sipariş Tarihi">
               <span className="whitespace-nowrap font-extrabold">

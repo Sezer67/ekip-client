@@ -23,7 +23,7 @@ const MyOrders = () => {
         SİPARİŞLERİM
       </h3>
       {productState.orders.length > 0 ? (
-        <div className="w-full md:w-3/4 lg:w-1/2 flex flex-col">
+        <div className="w-full md:w-4/5 lg:w-3/4 max-w-[800px] flex flex-col">
           {productState.orders.map((order) => (
             <OrderCard order={order} key={order.id} />
           ))}

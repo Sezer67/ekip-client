@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { api_url } from "../../configs/url.config";
 import { icons } from "../../constants";
 import { routeHelper } from "../../helpers";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useAppWindowSize,
+} from "../../redux/hooks";
 import { CategoryType } from "../../redux/types/category.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { getProducts } from "../../service/product.service";
@@ -18,6 +22,8 @@ const FilterDrawer: React.FC<PropType> = ({
   setActiveTab,
 }) => {
   const [isShowCount, setIsShowCount] = useState<boolean>(false);
+  const [drawerWidth, setDrawerWidth] = useState<number>(500);
+  const size = useAppWindowSize();
 
   const categoryState = useAppSelector((state) => state.category);
 
@@ -80,11 +86,17 @@ const FilterDrawer: React.FC<PropType> = ({
     }
   };
 
+  useEffect(() => {
+    if (size.width < 500) {
+      setDrawerWidth(320);
+    }
+  }, [size]);
+
   return (
     <Drawer
       closeIcon={closeIcon()}
       title={titleNode()}
-      width={500}
+      width={drawerWidth}
       onClose={() => setVisible(false)}
       visible={visible}
       headerStyle={styles.headerStyle}

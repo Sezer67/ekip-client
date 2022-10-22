@@ -65,9 +65,15 @@ const MySider = () => {
     },
     {
       label: "Favorilerim",
-      key: "/my-favs",
+      key: pathEnum.Path.FAVORITE,
       icon: <img src={icons.fill_favorite} alt="" />,
-      onClick: () => routeHelper.navigation(navigate, "/my-favs"),
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.FAVORITE),
+    },
+    {
+      label: "Takip",
+      key: pathEnum.Path.FOLLOW,
+      icon: <img src={icons.follow} alt="" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.FOLLOW),
     },
     {
       label: "Bakiyem",

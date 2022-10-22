@@ -138,7 +138,7 @@ const SalesYearlyChart: React.FC<PropsType> = ({ chartDatas }) => {
   }, [chartDatas]);
 
   return (
-    <div className="w-full pl-5 max-w-[500px]">
+    <div className="w-full pl-5 max-w-[400px] md:max-w-[700px] lg:max-w-[500px]">
       <h3 className="text-primary font-bold text-center">
         Aylık Toplam Kazanç {new Date().getFullYear()}
       </h3>

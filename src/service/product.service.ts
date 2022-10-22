@@ -2,6 +2,7 @@ import { AxiosPromise } from "axios";
 import { axiosInstance } from "../axios.util";
 import { api_url } from "../configs/url.config";
 import {
+  FavoriteStateType,
   OrderStateType,
   ProductStateType,
   SalesResultType,
@@ -78,4 +79,18 @@ export const getSales = (): AxiosPromise<SalesResultType> => {
 
 export const getSalesYearly = (): AxiosPromise<SalesYearlyType[]> => {
   return axiosInstance.get(`${api_url}/order/@me/sales/year`);
+};
+
+export const addProduuctToFavorites = (data: {
+  productId: string;
+}): AxiosPromise<FavoriteStateType> => {
+  return axiosInstance.post(`${api_url}/favorite`, data);
+};
+
+export const getFavorites = (): AxiosPromise<FavoriteStateType[]> => {
+  return axiosInstance.get(`${api_url}/favorite`);
+};
+
+export const removeProductToFavorites = (id: string): AxiosPromise<string> => {
+  return axiosInstance.delete(`${api_url}/favorite/${id}`);
 };

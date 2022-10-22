@@ -202,8 +202,7 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
           <InputNumber
             stringMode
             min={0}
-            style={{ width: "500px" }}
-            className="w-[500px]"
+            className="w-full sm:w-[500px]"
             addonAfter="₺"
           />
         </Form.Item>

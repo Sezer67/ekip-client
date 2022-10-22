@@ -9,7 +9,9 @@ export enum Path {
   PRODUCT_EDIT_QUERY_ID = "/product/edit",
   SELLER_ORDER = "/my-customer-orders",
   CUSTOMER_ORDER = "/my-orders",
+  FAVORITE = "/my-favs",
   BALANCE = "/my-balance",
+  FOLLOW = "/follow",
   SALES = "/sales",
   NOT_FOUND = "*",
 }

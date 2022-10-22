@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  FavoriteStateType,
   OrderStateType,
   ProductStateType,
   SalesStateType,
@@ -10,6 +11,7 @@ type InitialType = {
   selectedProduct: ProductStateType;
   orders: OrderStateType[];
   salesData: SalesStateType;
+  favorites: FavoriteStateType[];
 };
 
 const initialState: InitialType = {
@@ -35,6 +37,7 @@ const initialState: InitialType = {
     filterTotalTaking: 0,
     sales: [],
   },
+  favorites: [],
 };
 
 const productSlice = createSlice({
@@ -73,6 +76,17 @@ const productSlice = createSlice({
     setSalesData: (state, action: PayloadAction<SalesStateType>) => {
       state.salesData = action.payload;
     },
+    setFavorites: (state, action: PayloadAction<FavoriteStateType[]>) => {
+      state.favorites = action.payload;
+    },
+    addFavorite: (state, action: PayloadAction<FavoriteStateType>) => {
+      state.favorites.unshift(action.payload);
+    },
+    removeFavorite: (state, action: PayloadAction<{ id: string }>) => {
+      state.favorites = state.favorites.filter(
+        (fav) => fav.productId.id !== action.payload.id
+      );
+    },
   },
 });
 
@@ -85,4 +99,7 @@ export const {
   deleteOrder,
   setProductShowCountById,
   setSalesData,
+  setFavorites,
+  addFavorite,
+  removeFavorite,
 } = productSlice.actions;

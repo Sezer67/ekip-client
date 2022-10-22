@@ -2,6 +2,12 @@ import axios, { AxiosPromise, AxiosResponse } from "axios";
 import { axiosInstance } from "../axios.util";
 import { api_url } from "../configs/url.config";
 import {
+  CreateFollowResponseType,
+  FollowType,
+  GetMyFollowedSellerResponseType,
+  GetMyFollowersResponseType,
+} from "../redux/types/user.types";
+import {
   ResponseLoginType,
   UserLoginType,
   UserRegisterType,
@@ -33,6 +39,22 @@ export const logout = (): AxiosPromise<{ message: string }> => {
   return axiosInstance.get(`${url}/auth/logout`);
 };
 
-export const getP = () => {
-  return axiosInstance.get(`${url}/product`);
+export const followToSeller = (data: {
+  followedId: string;
+}): AxiosPromise<CreateFollowResponseType> => {
+  return axiosInstance.post(`${url}/follow`, data);
+};
+
+// müşterinin takip ettiği kullanıcılar
+export const getMyFollowedSeller = (): AxiosPromise<
+  GetMyFollowedSellerResponseType[]
+> => {
+  return axiosInstance.get(`${url}/follow/customer`);
+};
+
+// satıcının takipçileri
+export const getMyFollowers = (): AxiosPromise<
+  GetMyFollowersResponseType[]
+> => {
+  return axiosInstance.get(`${url}/follow/seller`);
 };

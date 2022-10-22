@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Role } from "../../enums/role.enum";
 import { ResponseLoginType } from "../../types/user-service.types";
-import { UserStateType } from "../types/user.types";
+import { FollowType, UserStateType } from "../types/user.types";
 
 const initialState: UserStateType = {
   user: {
@@ -15,6 +15,7 @@ const initialState: UserStateType = {
     profilePicture: null,
     token: undefined,
   },
+  followers: [],
 };
 
 const userSlice = createSlice({
@@ -49,9 +50,27 @@ const userSlice = createSlice({
         token: undefined,
       };
     },
+    setFollowers: (state, action: PayloadAction<FollowType[]>) => {
+      state.followers = action.payload;
+    },
+    addFollower: (state, action: PayloadAction<FollowType>) => {
+      state.followers.push(action.payload);
+    },
+    removeFollower: (state, action: PayloadAction<{ id: string }>) => {
+      state.followers = state.followers.filter(
+        (follow) => follow.id !== action.payload.id
+      );
+    },
   },
 });
 
 export default userSlice.reducer;
-export const { setUser, logout, setUserMinusBalance, setUserPlusBalance } =
-  userSlice.actions;
+export const {
+  setUser,
+  logout,
+  setUserMinusBalance,
+  setUserPlusBalance,
+  setFollowers,
+  addFollower,
+  removeFollower,
+} = userSlice.actions;

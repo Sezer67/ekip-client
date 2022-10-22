@@ -8,12 +8,13 @@ import { Role } from "./enums/role.enum";
 import { storageHelper } from "./helpers";
 import { setCategory } from "./redux/categorySlice/categorySlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { setUser } from "./redux/userSlice/userSlice";
-import { categoryService } from "./service";
+import { setFollowers, setUser } from "./redux/userSlice/userSlice";
+import { categoryService, productService, userService } from "./service";
 import { getLoggedUser } from "./service/user.sevice";
 import notfound from "./assets/images/notfound.svg";
-import { pathEnum } from "./enums";
 import { Path } from "./enums/path.enum";
+import { setFavorites } from "./redux/productSlice/productSlice";
+import { FollowType } from "./redux/types/user.types";
 const LoginPage = React.lazy(() => import("./pages/LoginPage/LoginPage"));
 const RegisterPage = React.lazy(
   () => import("./pages/RegisterPage/RegisterPage")
@@ -33,6 +34,8 @@ const MyCustomerOrders = React.lazy(
 );
 const Balance = React.lazy(() => import("./pages/Balance/Balance"));
 const Sales = React.lazy(() => import("./pages/Sales/Sales"));
+const Favorite = React.lazy(() => import("./pages/Favorite/Favorite"));
+const Follow = React.lazy(() => import("./pages/Follow/Follow"));
 
 function App() {
   const dispatch = useAppDispatch();
@@ -40,6 +43,9 @@ function App() {
   const [isAuth, setIsAuth] = useState<boolean | undefined>(undefined);
   const userState = useAppSelector((state) => state.user);
   const categoryState = useAppSelector((state) => state.category);
+  const productState = useAppSelector((state) => state.product);
+
+  // kategoriler - favoriler - takipçiler asdece bir page de değil her page de olacağı için global olarak istek atılıyor
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -48,6 +54,12 @@ function App() {
       } catch (error) {
         console.log(error);
       }
+    };
+    const getFavorites = async () => {
+      try {
+        const { data } = await productService.getFavorites();
+        dispatch(setFavorites(data));
+      } catch (error) {}
     };
     const getUser = async () => {
       try {
@@ -65,12 +77,44 @@ function App() {
         setIsAuth(false);
       }
     };
+    const getFollowers = async () => {
+      // customer için takip ettikleri - seller için takipçileri followers a aktarılacak
+
+      try {
+        const followers: FollowType[] = [];
+        if (userState.user.role === Role.Customer) {
+          const { data } = await userService.getMyFollowedSeller();
+
+          data.forEach((value) => {
+            followers.push(value.followedId);
+          });
+        } else if (userState.user.role === Role.Seller) {
+          const { data } = await userService.getMyFollowers();
+
+          data.forEach((value) => {
+            followers.push(value.followerId);
+          });
+        }
+        dispatch(setFollowers(followers));
+      } catch (error) {}
+    };
+
     if (userState.user.token) {
       setIsAuth(true);
     } else getUser();
     if (categoryState.initialState.length < 1) {
       getCategories();
     }
+    if (
+      userState.user.role === Role.Customer &&
+      productState.favorites.length < 1
+    ) {
+      getFavorites();
+    }
+    if (userState.followers.length < 1) {
+      getFollowers();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryState.initialState.length, dispatch, userState.user]);
 
   if (isAuth === undefined) {
@@ -111,13 +155,18 @@ function App() {
                 <Route path={Path.SALES} element={<Sales />} />
               </>
             )}
-
+            {userState.user.role === Role.Customer && (
+              <>
+                <Route path={Path.CUSTOMER_ORDER}>
+                  <Route index element={<MyOrders />} />
+                </Route>
+                <Route path={Path.FAVORITE} element={<Favorite />} />
+              </>
+            )}
             <Route path={Path.PRODUCT}>
               <Route path=":id" element={<Product />} />
             </Route>
-            <Route path={Path.CUSTOMER_ORDER}>
-              <Route index element={<MyOrders />} />
-            </Route>
+            <Route path={Path.FOLLOW} element={<Follow />} />
             <Route path={Path.BALANCE} element={<Balance />} />
           </Route>
           <Route path={Path.LOGIN} element={<LoginPage />} />

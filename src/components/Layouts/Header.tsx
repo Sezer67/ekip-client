@@ -44,7 +44,14 @@ const Header = () => {
     <>
       <div className="w-full h-[7vh] bg-primary shadow-lg">
         <div className="w-full h-full flex justify-between items-center px-5">
-          <h1 className="text-light m-0">EKIP</h1>
+          <h1
+            onClick={() => {
+              routeHelper.navigation(navigate, Path.HOME);
+            }}
+            className="text-light m-0"
+          >
+            EKIP
+          </h1>
           <div className="flex flex-row space-x-3 items-center">
             <span className="text-light">
               {RoleTexts[userState.user.role]} Hesabı

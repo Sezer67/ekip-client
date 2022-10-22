@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { setUser } from "../../redux/userSlice/userSlice";
 import { userService } from "../../service";
-import { getP } from "../../service/user.sevice";
 import { formDatas, FormValuesType, roleValues } from "./profile-page.config";
 
 const ProfilePage = () => {
@@ -82,7 +81,7 @@ const ProfilePage = () => {
             </div>
           </Tooltip>
         </div>
-        <div className="ml-6 p-4 border ">
+        <div className="ml-3 sm:ml-6 p-4 border ">
           <span>
             {userState.user.firstName
               .toUpperCase()
@@ -150,15 +149,6 @@ const ProfilePage = () => {
               </Button>
             </Form.Item>
           </Form>
-        </div>
-        <div className="w-full md:w-1/2">
-          <button
-            onClick={async () => {
-              const a = await getP();
-            }}
-          >
-            Bas
-          </button>
         </div>
       </div>
     </div>

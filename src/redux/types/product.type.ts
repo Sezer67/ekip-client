@@ -44,3 +44,8 @@ export type SalesStateType = {
   filterTotalTaking: number;
 };
 export type SalesResultType = SalesStateType;
+
+export type FavoriteStateType = {
+  id: string;
+  productId: ProductStateType;
+};

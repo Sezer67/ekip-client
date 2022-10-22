@@ -14,3 +14,11 @@ favotire table oluşturulacak.
 Product.tsx product page de satıcıyı takip et
 Favorilere ekle
 Spiariş ver
+
+FAVORİLER CUSTOMER +
+
+NOTIFICATION ALL
+TAKIP ETTIKLERIM (customer follow page desing + seller -)
+(MESAJ)
+AUTH DOLDUĞUNDA LOGIN E AT
+HER ISTEKTEN YANIT DÖNENE KADAR LOADING GLOBAL LOADING

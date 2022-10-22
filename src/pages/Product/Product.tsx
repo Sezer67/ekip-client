@@ -1,15 +1,15 @@
-import { Button, InputNumber } from "antd";
+import { Button, InputNumber, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
-import { imageHelper, routeHelper } from "../../helpers";
+import { convertHelper, imageHelper, routeHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   addOrder,
   setProducts,
   setSelectedProduct,
 } from "../../redux/productSlice/productSlice";
-import { productService } from "../../service";
+import { productService, userService } from "../../service";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { productsSliderSettings } from "./product.config";
@@ -17,12 +17,19 @@ import ProductCard from "../../components/Products/ProductCard";
 import { api_url } from "../../configs/url.config";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { pathEnum, roleEnum } from "../../enums";
-import { setUserMinusBalance } from "../../redux/userSlice/userSlice";
+import {
+  addFollower,
+  setUserMinusBalance,
+} from "../../redux/userSlice/userSlice";
+import { icons } from "../../constants";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
   const categoryState = useAppSelector((state) => state.category);
   const userState = useAppSelector((state) => state.user);
+
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isFollow, setIsFollow] = useState<boolean>(false);
   const [piece, setPiece] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState<string>(
     (1 * productState.selectedProduct.price).toString()
@@ -55,7 +62,22 @@ const Product = () => {
       const productId = location.pathname.split("product/")[1];
       getProductById(productId);
     }
-  }, [productState]);
+  }, [dispatch, location.pathname, productState]);
+
+  useEffect(() => {
+    const isFav = productState.favorites.find(
+      (favorite) => favorite.productId.id === productState.selectedProduct.id
+    );
+    setIsFavorite(!!isFav);
+  }, [productState.favorites, productState.selectedProduct.id]);
+
+  useEffect(() => {
+    const isFollowControl = userState.followers.find(
+      (followed) => followed.id === productState.selectedProduct.ownerId.id
+    );
+    setIsFollow(!!isFollowControl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userState.followers]);
 
   const handlePieceChange = (value: number) => {
     setPiece(value);
@@ -123,12 +145,43 @@ const Product = () => {
     }
   };
 
+  const handleFollow = async () => {
+    try {
+      if (!productState.selectedProduct.ownerId) {
+        dispatch(
+          setNotification({
+            message: "Not Found",
+            description: "Satıcıya Ulaşılamıyor",
+            placement: "top",
+            isNotification: true,
+            status: "error",
+          })
+        );
+        return;
+      }
+      const { data } = await userService.followToSeller({
+        followedId: productState.selectedProduct.ownerId.id,
+      });
+      const follow = convertHelper.convertResponseFollowToReduxFollow(data);
+      dispatch(addFollower(follow));
+      dispatch(
+        setNotification({
+          message: "Satıcı, Takip Listenize Eklendi",
+          description: "",
+          placement: "top",
+          isNotification: true,
+          status: "info",
+        })
+      );
+    } catch (error) {}
+  };
+
   return (
     <div className="m-3 min-h-[87vh] flex flex-col justify-center items-center">
-      <div className="flex flex-row justify-start items-stretch flex-wrap">
+      <div className="flex flex-row justify-around items-stretch flex-wrap">
         {productState.selectedProduct.images &&
           productState.selectedProduct.images.length > 0 && (
-            <div className="w-full md:w-1/2 lg:max-w-[800px] p-4 bg-white rounded-md">
+            <div className="w-full flex justify-center items-center md:w-1/2 lg:max-w-[800px] p-4 bg-white rounded-md">
               <img
                 src={imageHelper.getBase64(
                   productState.selectedProduct.images[0]
@@ -141,7 +194,7 @@ const Product = () => {
           className={`${
             productState.selectedProduct.images &&
             productState.selectedProduct.images.length > 0
-              ? "mt-3 md:w-1/2 lg:w-auto md:pl-4 md:mt-0"
+              ? "mt-3 md:w-1/2 lg:w-auto md:mt-0"
               : ""
           } w-full  `}
         >
@@ -152,15 +205,24 @@ const Product = () => {
                   <td
                     className={`pl-3 ${
                       userState.user.role !== roleEnum.Role.Customer
-                    }  absolute`}
+                    } whitespace-nowrap`}
                   >
                     <span className="text-orange font-semibold text-xl ">
                       {productState.selectedProduct.name.toUpperCase()}
                     </span>
                   </td>
                   {userState.user.role === roleEnum.Role.Customer && (
-                    <td className="">
-                      <button className="text-red-500">Favorilere Ekle</button>
+                    <td className="float-right">
+                      <button className="text-red-500">
+                        <img
+                          src={
+                            isFavorite
+                              ? icons.fill_favorite
+                              : icons.empty_favorite
+                          }
+                          alt="fav"
+                        />
+                      </button>
                     </td>
                   )}
                 </tr>
@@ -231,7 +293,13 @@ const Product = () => {
                 </tr>
                 {userState.user.role === roleEnum.Role.Customer && (
                   <tr className="w-full h-10">
-                    <td />
+                    <td>
+                      <Button onClick={handleFollow} className="mt-3">
+                        {isFollow
+                          ? "Satıcı Takip Ediliyor"
+                          : "Satıcıyı Takip Et"}
+                      </Button>
+                    </td>
                     <td className="float-right mt-3">
                       <Button type="primary" onClick={handleClick}>
                         Sipariş Ver

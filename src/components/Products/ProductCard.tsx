@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { icons } from "../../constants";
 import { pathEnum, roleEnum } from "../../enums";
 import { imageHelper, routeHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
+  addFavorite,
+  removeFavorite,
   setProductShowCountById,
   setSelectedProduct,
 } from "../../redux/productSlice/productSlice";
@@ -17,7 +19,11 @@ type PropsType = {
 };
 
 const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
   const userState = useAppSelector((state) => state.user);
+  const productState = useAppSelector((state) => state.product);
+
   const imgsrc = product.images && imageHelper.getBase64(product.images[0]);
 
   const dispatch = useAppDispatch();
@@ -31,11 +37,26 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
     dispatch(setSelectedProduct(product));
   };
 
-  const handleFavorite = () => {};
+  const handleFavorite = async () => {
+    try {
+      if (!isFavorite) {
+        const { data } = await productService.addProduuctToFavorites({
+          productId: product.id,
+        });
+        dispatch(addFavorite(data));
+        setIsFavorite(true);
+      } else {
+        const { data } = await productService.removeProductToFavorites(
+          product.id
+        );
+        dispatch(removeFavorite({ id: product.id }));
+      }
+    } catch (error) {}
+  };
   const handleShow = async () => {
     // product showCount güncellemesi eğer editable ise değişmeyecek
     // yani satıcı kendi ürününü görüntüleyince görüntülenme sayısı artmayacak
-    if (!editable) {
+    if (userState.user.role === roleEnum.Role.Customer) {
       try {
         await productService.updateProductById(product.id, { showCount: 1 });
         dispatch(setProductShowCountById({ id: product.id }));
@@ -46,6 +67,14 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
     routeHelper.navigation(navigate, `/product/${product.id}`);
     dispatch(setSelectedProduct(product));
   };
+
+  useEffect(() => {
+    const isFav = productState.favorites.find(
+      (favorite) => favorite.productId.id === product.id
+    );
+    setIsFavorite(!!isFav);
+  }, [product, productState.favorites]);
+
   return (
     <div className="relative min-w-48 w-56 max-h-60 shadow-md bg-white p-3 m-3 rounded-md  flex flex-col justify-around cursor-pointer hover:shadow-xl transition-shadow duration-300">
       <div
@@ -56,7 +85,16 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
             : ""
         } `}
       >
-        <img src={editable ? icons.edit : icons.empty_favorite} alt="fav" />
+        <img
+          src={
+            editable
+              ? icons.edit
+              : isFavorite
+              ? icons.fill_favorite
+              : icons.empty_favorite
+          }
+          alt="fav"
+        />
       </div>
       <div className="flex justify-center mb-6 w-full">
         {imgsrc ? (

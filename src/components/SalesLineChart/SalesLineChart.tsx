@@ -161,7 +161,7 @@ const SalesLineChart = () => {
   }, [productState.salesData.sales]);
 
   return (
-    <div className="w-full max-w-[900px] ">
+    <div className="w-full max-w-[750px] ">
       <canvas id="chart" />
     </div>
   );
