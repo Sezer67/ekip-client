@@ -47,6 +47,12 @@ const MySider = () => {
       onClick: () =>
         routeHelper.navigation(navigate, pathEnum.Path.SELLER_ORDER),
     },
+    {
+      label: "Takipçilerim",
+      key: pathEnum.Path.FOLLOW,
+      icon: <img src={icons.follow} alt="" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.FOLLOW),
+    },
   ];
 
   const customerMenuItem: ItemType[] = [

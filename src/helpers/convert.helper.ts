@@ -22,5 +22,6 @@ export const convertResponseFollowToReduxFollow = (
     email: follow.followedId.email,
     firstName: follow.followedId.firstName,
     lastName: follow.followedId.lastName,
+    profilePicture: follow.followedId.profilePicture,
   };
 };

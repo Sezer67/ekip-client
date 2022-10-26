@@ -16,7 +16,9 @@ import empty from "../assets/icons/empty.png";
 import accept from "../assets/icons/accept.png";
 import cash from "../assets/icons/cash.png";
 import follow from "../assets/icons/follow.png";
+import send from "../assets/icons/send.png";
 export {
+  send,
   follow,
   cash,
   accept,

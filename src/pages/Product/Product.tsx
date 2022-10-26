@@ -294,11 +294,17 @@ const Product = () => {
                 {userState.user.role === roleEnum.Role.Customer && (
                   <tr className="w-full h-10">
                     <td>
-                      <Button onClick={handleFollow} className="mt-3">
-                        {isFollow
-                          ? "Satıcı Takip Ediliyor"
-                          : "Satıcıyı Takip Et"}
-                      </Button>
+                      {isFollow ? (
+                        <Tooltip title="Takibi Bırak">
+                          <Button onClick={handleFollow} className="mt-3">
+                            Satıcı Takip Ediliyor
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Button onClick={handleFollow} className="mt-3">
+                          Satıcıyı Takip et
+                        </Button>
+                      )}
                     </td>
                     <td className="float-right mt-3">
                       <Button type="primary" onClick={handleClick}>

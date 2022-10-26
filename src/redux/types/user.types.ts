@@ -20,8 +20,9 @@ export type UserType = {
 export type FollowType = {
   id: string;
   firstName: string;
-  lastName: String;
+  lastName: string;
   email: string;
+  profilePicture: string | null;
 };
 
 export type CreateFollowResponseType = {

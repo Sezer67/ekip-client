@@ -25,6 +25,25 @@ code {
   align-items: center;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 30px;
+  background-color: #1d2639;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7b8ca6;
+  border-radius: 30px;
+}
+
 .circle {
   width: 500px;
   height: 500px;

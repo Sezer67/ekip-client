@@ -15,7 +15,7 @@ Product.tsx product page de satıcıyı takip et
 Favorilere ekle
 Spiariş ver
 
-FAVORİLER CUSTOMER +
+FAVORİLER CUSTOMER + (product page favorilere ekle kontrol edilecek)
 
 NOTIFICATION ALL
 TAKIP ETTIKLERIM (customer follow page desing + seller -)
