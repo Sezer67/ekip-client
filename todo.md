@@ -22,3 +22,12 @@ TAKIP ETTIKLERIM (customer follow page desing + seller -)
 (MESAJ)
 AUTH DOLDUĞUNDA LOGIN E AT
 HER ISTEKTEN YANIT DÖNENE KADAR LOADING GLOBAL LOADING
+
+SELLER
+en çok satılan ürünüm , en sadık müşterim query i nasıl kuracağım
+
+admin günlük satış listesi (query)
+admin color pick;
+öneri kutusu
+öneriye destek +++
+öneri sayfasında bir de şikayet kısmı

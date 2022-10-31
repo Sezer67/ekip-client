@@ -3,6 +3,8 @@ import FormItem from "antd/es/form/FormItem";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../enums/path.enum";
+import { useAppDispatch } from "../../redux/hooks";
+import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { register } from "../../service/user.sevice";
 import {
   FormValuesEnum,
@@ -12,12 +14,23 @@ import {
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   const handleOnFinish = async (values: FormValuesType) => {
     try {
       const { data } = await register(values);
       navigate(Path.LOGIN);
-    } catch (error) {}
+    } catch (error: any) {
+      debugger;
+      dispatch(
+        setNotification({
+          message: "Kayıt Başarısız",
+          description: error.response.data.description,
+          isNotification: true,
+          placement: "top",
+          status: "error",
+        })
+      );
+    }
   };
 
   return (
@@ -31,37 +44,31 @@ const RegisterPage: React.FC = () => {
             onFinish={handleOnFinish}
           >
             <Form.Item
-              label="First Name"
+              label="Ad"
               name={FormValuesEnum.firstName}
               rules={[
                 {
                   required: true,
-                  message: errorMessages.required("First Name"),
+                  message: errorMessages.required("Ad"),
                 },
               ]}
             >
-              <Input size="middle" placeholder="Jessica" type="text" />
+              <Input size="middle" placeholder="Sezer" type="text" />
             </Form.Item>
             <Form.Item
-              label="Last Name"
+              label="Soyad"
               name={FormValuesEnum.lastName}
               rules={[
                 {
                   required: true,
-                  message: errorMessages.required("Last Name"),
+                  message: errorMessages.required("Soyad"),
                 },
               ]}
             >
-              <Input size="middle" placeholder="Ivanov" />
+              <Input size="middle" placeholder="Kenar" />
             </Form.Item>
-            <FormItem label="Gender" name={FormValuesEnum.gender}>
-              <Radio.Group>
-                <Radio value="female"> Female </Radio>
-                <Radio value="male"> Male </Radio>
-              </Radio.Group>
-            </FormItem>
             <Form.Item
-              label="Username"
+              label="Kullanıcı Adı"
               name={FormValuesEnum.username}
               rules={[
                 {
@@ -70,7 +77,7 @@ const RegisterPage: React.FC = () => {
                 },
               ]}
             >
-              <Input size="middle" placeholder="username" />
+              <Input size="middle" />
             </Form.Item>
             <Form.Item
               label="Email"
@@ -86,23 +93,23 @@ const RegisterPage: React.FC = () => {
                 },
               ]}
             >
-              <Input size="middle" placeholder="email@mail.com" />
+              <Input size="middle" />
             </Form.Item>
             <Form.Item
-              label="Password"
+              label="Şifre"
               name={FormValuesEnum.password}
               rules={[
                 {
                   required: true,
-                  message: errorMessages.required("Password"),
+                  message: errorMessages.required("Şifre"),
                 },
               ]}
             >
-              <Input.Password size="middle" placeholder="password" />
+              <Input.Password size="middle" />
             </Form.Item>
             <Form.Item className="flex justify-end">
               <Button htmlType="submit" size="large" type="primary">
-                Submit
+                Kayıt Ol
               </Button>
             </Form.Item>
           </Form>

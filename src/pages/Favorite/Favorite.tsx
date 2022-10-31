@@ -12,9 +12,10 @@ const Favorite = () => {
     <div className="p-3">
       <h3 className="text-xl text-primary font-bold">FAVORİ ÜRÜNLERİNİZ</h3>
       <div className="w-full flex flex-row">
-        {productState.favorites.map((fav) => (
-          <ProductCard product={fav.productId} key={fav.id} />
-        ))}
+        {productState.favorites &&
+          productState.favorites.map((fav) => (
+            <ProductCard product={fav.productId} key={fav.id} />
+          ))}
       </div>
     </div>
   );

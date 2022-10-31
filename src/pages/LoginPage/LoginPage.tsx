@@ -8,8 +8,10 @@ import { UserLoginType } from "../../types/user-service.types";
 import { FormValuesEnum } from "./login-page.config";
 import * as userSlice from "../../redux/userSlice/userSlice";
 import { setApiToken } from "../../axios.util";
-import { storageHelper } from "../../helpers";
+import { routeHelper, storageHelper } from "../../helpers";
 import { pathEnum } from "../../enums";
+import { setNotification } from "../../redux/userSlice/notificationSlice";
+import { Role } from "../../enums/role.enum";
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -35,9 +37,31 @@ const LoginPage = () => {
         setApiToken(data.token);
         storageHelper.setKeyWithValue("token", data.token);
       }
-      navigate(pathEnum.Path.HOME);
-    } catch (error) {
-      console.log(error);
+      debugger;
+      if (data.role === Role.Admin) {
+        routeHelper.navigation(navigate, pathEnum.Path.USERS);
+      } else {
+        navigate(pathEnum.Path.HOME);
+      }
+      dispatch(
+        setNotification({
+          message: "Heyy !",
+          description: "Hoşgeldin :)",
+          isNotification: true,
+          placement: "top",
+          status: "success",
+        })
+      );
+    } catch (error: any) {
+      dispatch(
+        setNotification({
+          message: "Opppsss",
+          description: error.response.data.description,
+          isNotification: true,
+          placement: "top",
+          status: "error",
+        })
+      );
     }
   };
 
@@ -55,14 +79,14 @@ const LoginPage = () => {
           ></Form.Item>
           <Form.Item
             name={FormValuesEnum.username}
-            label="Username | Email"
+            label="Kullanıcı Adı | Email"
             className="w-full"
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={FormValuesEnum.password}
-            label="Password"
+            label="Şifre"
             className="w-full"
           >
             <Input.Password />
@@ -72,7 +96,7 @@ const LoginPage = () => {
               Henüz bir hesabım yok.
             </Button>
             <Button type="primary" htmlType="submit">
-              Submit
+              Giriş Yap
             </Button>
           </Form.Item>
         </Form>

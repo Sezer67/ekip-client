@@ -13,5 +13,7 @@ export enum Path {
   BALANCE = "/my-balance",
   FOLLOW = "/follow",
   SALES = "/sales",
+  USERS = "/users",
+  IDEA = "/idea",
   NOT_FOUND = "*",
 }

@@ -17,7 +17,13 @@ import accept from "../assets/icons/accept.png";
 import cash from "../assets/icons/cash.png";
 import follow from "../assets/icons/follow.png";
 import send from "../assets/icons/send.png";
+import idea from "../assets/icons/idea.png";
+import history from "../assets/icons/history.png";
+import back_page from "../assets/icons/left.png";
 export {
+  back_page,
+  idea,
+  history,
   send,
   follow,
   cash,

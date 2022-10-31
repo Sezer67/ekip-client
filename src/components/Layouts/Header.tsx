@@ -28,12 +28,12 @@ const Header = () => {
     <Menu
       items={[
         {
-          label: "Profile",
+          label: "Profil",
           key: 0,
           onClick: () => routeHelper.navigation(navigate, Path.PROFILE),
         },
         {
-          label: "Log Out",
+          label: "Çıkış Yap",
           key: 1,
           onClick: handleLogout,
         },

@@ -1,7 +1,9 @@
 import { Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import { icons } from "../../constants";
 import { useAppDispatch } from "../../redux/hooks";
+import { MessageType } from "../../redux/types/chat.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { chatService } from "../../service";
 import Message from "../Message/Message";
@@ -13,9 +15,13 @@ const Chat: React.FC<PropsType> = ({
   messages,
   setMessages,
 }) => {
+  const socket = io("http://192.168.1.103:8000");
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [messageEnd, setMessageEnd] = useState<HTMLDivElement | null>(null);
+  const [todayFirstMessage, setTodayFirstMessage] = useState<
+    MessageType | undefined
+  >();
 
   const dispatch = useAppDispatch();
 
@@ -53,14 +59,47 @@ const Chat: React.FC<PropsType> = ({
 
   useEffect(() => {
     scrollToBottom();
+    if (messages && !todayFirstMessage) {
+      const currentDate = new Date();
+      const todayMessages = messages.filter(
+        (m) => new Date(m.date).getTime() > currentDate.setHours(0, 0, 0)
+      );
+      setTodayFirstMessage(todayMessages[0]);
+    }
   }, [messages]);
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.on("socket-message", (data: MessageType) => {
+      console.log("data : ", data);
+      setMessages([...messages, data]);
+    });
+
+    return () => {
+      console.log("return e girdi");
+      socket.off("socket-message");
+      socket.disconnect();
+    };
+  }, [socket]);
 
   return (
     <div className=" h-full w-full rounded-md p-4 overflow-y-auto">
       <div className="h-[70vh] overflow-y-auto flex flex-col">
-        {messages.map((msg) => (
-          <Message message={msg} key={msg.id} />
-        ))}
+        {messages &&
+          messages.map((msg) => {
+            if (todayFirstMessage && todayFirstMessage.id === msg.id) {
+              return (
+                <>
+                  <span className="w-full my-1 text-primary font-bold bg-slate-200 shadow-sm bg-opacity-50 px-5 py-2 rounded-xl text-center">
+                    BUGÜN
+                  </span>
+                  <Message message={msg} key={msg.id} />
+                </>
+              );
+            }
+            return <Message message={msg} key={msg.id} />;
+          })}
         <div
           style={{ float: "left", clear: "both" }}
           ref={(el) => setMessageEnd(el)}

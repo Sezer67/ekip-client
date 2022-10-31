@@ -1,6 +1,7 @@
 import { Button, Form, Input, Select, Tooltip } from "antd";
 import React, { useState } from "react";
 import { icons } from "../../constants";
+import { roleEnum } from "../../enums";
 import { imageHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
@@ -97,7 +98,7 @@ const ProfilePage = () => {
               firstName: userState.user.firstName,
               lastName: userState.user.lastName,
               email: userState.user.email,
-              role: userState.user.role,
+              role: roleEnum.RoleText[userState.user.role as never],
             }}
             layout="vertical"
             onFinish={handleFinish}
@@ -135,13 +136,14 @@ const ProfilePage = () => {
               label={formDatas.names.role.label}
               name={formDatas.names.role.name}
             >
-              <Select defaultValue={userState.user.role}>
+              <Input disabled />
+              {/* <Select defaultValue={userState.user.role}>
                 {roleValues.map((option) => (
                   <Select.Option key={option.value} value={option.value}>
                     {option.label}
                   </Select.Option>
                 ))}
-              </Select>
+              </Select> */}
             </Form.Item>
             <Form.Item className="w-full flex justify-end">
               <Button type="primary" htmlType="submit">

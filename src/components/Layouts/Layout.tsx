@@ -10,34 +10,32 @@ import MySider from "./MySider";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const userState = useAppSelector((state) => state.user);
-  const notificationState = useAppSelector((state) => state.notification);
+  // const notificationState = useAppSelector((state) => state.notification);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const openNotification = () => {
-    notification[notificationState.status]({
-      message: notificationState.message,
-      description: notificationState.description,
-      placement: notificationState.placement,
-    });
-    dispatch(
-      setNotification({
-        description: "",
-        message: "",
-        status: "success",
-        isNotification: false,
-        placement: "top",
-      })
-    );
-  };
+  // const openNotification = () => {
+  //   notification[notificationState.status]({
+  //     message: notificationState.message,
+  //     description: notificationState.description,
+  //     placement: notificationState.placement,
+  //   });
+  //   dispatch(
+  //     setNotification({
+  //       description: "",
+  //       message: "",
+  //       status: "success",
+  //       isNotification: false,
+  //       placement: "top",
+  //     })
+  //   );
+  // };
 
+  // useEffect(() => {
+  //   if (notificationState.isNotification) openNotification();
+  // }, [notificationState.isNotification]);
   useEffect(() => {
-    if (notificationState.isNotification) openNotification();
-  }, [notificationState.isNotification]);
-  useEffect(() => {
-    console.log("useffecnt");
     if (userState.user.token) {
-      console.log("useEffect in if");
       setApiToken(userState.user.token);
     }
   }, [userState.user.token]);

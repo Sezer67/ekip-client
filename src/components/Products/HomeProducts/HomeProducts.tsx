@@ -16,8 +16,6 @@ const HomeProducts: React.FC<{ products: ProductStateType[] }> = ({
   }>({ isNext: false, isPrev: false });
   const size = useAppWindowSize();
 
-  const length = products.length;
-
   useEffect(() => {
     if (size.width < 600) {
       setPerPage(2);
@@ -33,11 +31,12 @@ const HomeProducts: React.FC<{ products: ProductStateType[] }> = ({
   }, [size]);
 
   useEffect(() => {
-    const isNext = (page + 1) * perPage <= length;
+    debugger;
+    const isNext = (page + 1) * perPage < products.length;
     const isPrev = page !== 0;
     setIsChangePageNumber({ isPrev, isNext });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, perPage]);
+  }, [page, perPage, products.length]);
 
   const handleNextPage = () => {
     setPage(page + 1);

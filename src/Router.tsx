@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import { notification, Spin } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { setApiToken } from "./axios.util";
@@ -15,6 +15,8 @@ import notfound from "./assets/images/notfound.svg";
 import { Path } from "./enums/path.enum";
 import { setFavorites } from "./redux/productSlice/productSlice";
 import { FollowType } from "./redux/types/user.types";
+import { setNotification } from "./redux/userSlice/notificationSlice";
+
 const LoginPage = React.lazy(() => import("./pages/LoginPage/LoginPage"));
 const RegisterPage = React.lazy(
   () => import("./pages/RegisterPage/RegisterPage")
@@ -36,6 +38,8 @@ const Balance = React.lazy(() => import("./pages/Balance/Balance"));
 const Sales = React.lazy(() => import("./pages/Sales/Sales"));
 const Favorite = React.lazy(() => import("./pages/Favorite/Favorite"));
 const Follow = React.lazy(() => import("./pages/Follow/Follow"));
+const Idea = React.lazy(() => import("./pages/Idea/Idea"));
+const User = React.lazy(() => import("./pages/Users/User"));
 
 function App() {
   const dispatch = useAppDispatch();
@@ -44,6 +48,7 @@ function App() {
   const userState = useAppSelector((state) => state.user);
   const categoryState = useAppSelector((state) => state.category);
   const productState = useAppSelector((state) => state.product);
+  const notificationState = useAppSelector((state) => state.notification);
 
   // kategoriler - favoriler - takipçiler asdece bir page de değil her page de olacağı için global olarak istek atılıyor
   useEffect(() => {
@@ -107,6 +112,7 @@ function App() {
     }
     if (
       userState.user.role === Role.Customer &&
+      productState.favorites &&
       productState.favorites.length < 1
     ) {
       getFavorites();
@@ -116,6 +122,27 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryState.initialState.length, dispatch, userState.user]);
+
+  const openNotification = () => {
+    notification[notificationState.status]({
+      message: notificationState.message,
+      description: notificationState.description,
+      placement: notificationState.placement,
+    });
+    dispatch(
+      setNotification({
+        description: "",
+        message: "",
+        status: "success",
+        isNotification: false,
+        placement: "top",
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (notificationState.isNotification) openNotification();
+  }, [notificationState.isNotification]);
 
   if (isAuth === undefined) {
     return (
@@ -137,7 +164,16 @@ function App() {
               </Layout>
             }
           >
-            <Route path={Path.HOME} element={<DashboardPage />} />
+            <Route
+              path={Path.HOME}
+              element={
+                userState.user.role === Role.Admin ? (
+                  <User />
+                ) : (
+                  <DashboardPage />
+                )
+              }
+            />
             <Route path={Path.PROFILE} element={<ProfilePage />} />
 
             {userState.user.role === Role.Seller && (
@@ -163,11 +199,15 @@ function App() {
                 <Route path={Path.FAVORITE} element={<Favorite />} />
               </>
             )}
+            {userState.user.role === Role.Admin && (
+              <Route path={Path.USERS} element={<User />} />
+            )}
             <Route path={Path.PRODUCT}>
               <Route path=":id" element={<Product />} />
             </Route>
             <Route path={Path.FOLLOW} element={<Follow />} />
             <Route path={Path.BALANCE} element={<Balance />} />
+            <Route path={Path.IDEA} element={<Idea />} />
           </Route>
           <Route path={Path.LOGIN} element={<LoginPage />} />
           <Route path={Path.REGISTER} element={<RegisterPage />} />

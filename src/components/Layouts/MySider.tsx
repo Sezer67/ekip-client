@@ -6,10 +6,12 @@ import { icons } from "../../constants";
 import { pathEnum } from "../../enums";
 import { Role } from "../../enums/role.enum";
 import { routeHelper } from "../../helpers";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppSelector, useAppWindowSize } from "../../redux/hooks";
 
 const MySider = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const size = useAppWindowSize();
+
   const userState = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,6 +55,12 @@ const MySider = () => {
       icon: <img src={icons.follow} alt="" />,
       onClick: () => routeHelper.navigation(navigate, pathEnum.Path.FOLLOW),
     },
+    {
+      label: "Öneri-Şikayet",
+      key: pathEnum.Path.IDEA,
+      icon: <img src={icons.idea} alt="" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.IDEA),
+    },
   ];
 
   const customerMenuItem: ItemType[] = [
@@ -89,9 +97,19 @@ const MySider = () => {
     },
   ];
 
+  const adminMenuItem: ItemType[] = [
+    {
+      label: "Kullanıcılar",
+      key: pathEnum.Path.HOME,
+      icon: <img src={icons.user} alt="bla" className="w-6 h-6" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.HOME),
+    },
+  ];
+
   return (
     <Layout.Sider
-      className="h-[93vh] !bg-pink"
+      className="h-[93vh] !bg-pink !w-60"
+      width={size.width < 500 ? 180 : 240}
       trigger={null}
       collapsible
       collapsed={collapsed}
@@ -114,6 +132,8 @@ const MySider = () => {
             ? sellerMenuItem
             : userState.user.role === Role.Customer
             ? customerMenuItem
+            : userState.user.role === Role.Admin
+            ? adminMenuItem
             : []
         }
         className="!bg-transparent !text-lg space-y-3"

@@ -46,9 +46,7 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
         dispatch(addFavorite(data));
         setIsFavorite(true);
       } else {
-        const { data } = await productService.removeProductToFavorites(
-          product.id
-        );
+        await productService.removeProductToFavorites(product.id);
         dispatch(removeFavorite({ id: product.id }));
       }
     } catch (error) {}
@@ -69,6 +67,7 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
   };
 
   useEffect(() => {
+    if (!productState.favorites) return;
     const isFav = productState.favorites.find(
       (favorite) => favorite.productId.id === product.id
     );

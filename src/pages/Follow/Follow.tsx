@@ -140,6 +140,7 @@ const Follow = () => {
           >
             {selectedRoomId ? (
               <Chat
+                key={selectedRoomId}
                 roomId={selectedRoomId}
                 receiverUser={receiverUser}
                 messages={messages}

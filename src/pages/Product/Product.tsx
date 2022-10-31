@@ -65,6 +65,7 @@ const Product = () => {
   }, [dispatch, location.pathname, productState]);
 
   useEffect(() => {
+    if (!productState.favorites && !productState.selectedProduct.id) return;
     const isFav = productState.favorites.find(
       (favorite) => favorite.productId.id === productState.selectedProduct.id
     );
