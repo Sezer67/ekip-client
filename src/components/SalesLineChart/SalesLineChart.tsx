@@ -15,7 +15,8 @@ import {
   SubTitle,
 } from "chart.js";
 import { useAppSelector } from "../../redux/hooks";
-import { ChartDataType } from "./chart.config";
+import { ChartDataType, Months } from "./chart.config";
+import { Empty } from "antd";
 Chart.register(
   LineElement,
   BarElement,
@@ -31,7 +32,7 @@ Chart.register(
   SubTitle
 );
 Chart.defaults.font.size = 14;
-const SalesLineChart = () => {
+const SalesLineChart: React.FC<{ month: number }> = ({ month }) => {
   const productState = useAppSelector((state) => state.product);
   const [chartData, setChartData] = useState<ChartDataType[]>([]);
 
@@ -47,7 +48,7 @@ const SalesLineChart = () => {
         labels: labels,
         datasets: [
           {
-            label: "Günlük Toplam Kazanç",
+            label: `Günlük Toplam Kazanç (${Months[month]})`,
             data: datas,
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
@@ -119,7 +120,9 @@ const SalesLineChart = () => {
     const ctx = (
       document.getElementById("chart") as HTMLCanvasElement
     ).getContext("2d");
-    if (!ctx || chartData.length < 1) return;
+    if (!ctx || chartData.length < 1) {
+      return;
+    }
     const labels: string[] = [];
     const datas: any[] = [];
     chartData.forEach((value) => {
@@ -130,7 +133,7 @@ const SalesLineChart = () => {
     if (chartStatus !== undefined) {
       chartStatus.destroy();
     }
-    const chartType: "line" | "bar" = datas.length > 10 ? "line" : "bar";
+    const chartType: "line" | "bar" = datas.length > 3 ? "line" : "bar";
     const chart = createChart(ctx, chartType, labels, datas);
   }, [chartData]);
 

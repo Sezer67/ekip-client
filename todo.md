@@ -25,9 +25,12 @@ HER ISTEKTEN YANIT DÖNENE KADAR LOADING GLOBAL LOADING
 
 SELLER
 en çok satılan ürünüm , en sadık müşterim query i nasıl kuracağım
+satışlarım kısmındaki ilk tabloya ay değiştirme eklenmeli ++++
 
 admin günlük satış listesi (query)
 admin color pick;
 öneri kutusu
 öneriye destek +++
 öneri sayfasında bir de şikayet kısmı
+
+en çok satanlar

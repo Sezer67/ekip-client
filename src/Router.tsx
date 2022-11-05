@@ -40,7 +40,7 @@ const Favorite = React.lazy(() => import("./pages/Favorite/Favorite"));
 const Follow = React.lazy(() => import("./pages/Follow/Follow"));
 const Idea = React.lazy(() => import("./pages/Idea/Idea"));
 const User = React.lazy(() => import("./pages/Users/User"));
-
+const UsersIdea = React.lazy(() => import("./pages/Idea/UsersIdea"));
 function App() {
   const dispatch = useAppDispatch();
 
@@ -200,7 +200,10 @@ function App() {
               </>
             )}
             {userState.user.role === Role.Admin && (
-              <Route path={Path.USERS} element={<User />} />
+              <>
+                <Route path={Path.USERS} element={<User />} />
+                <Route path={Path.USERIDEA} element={<UsersIdea />} />
+              </>
             )}
             <Route path={Path.PRODUCT}>
               <Route path=":id" element={<Product />} />

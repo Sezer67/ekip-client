@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { icons } from "../../constants";
 import { pathEnum, roleEnum } from "../../enums";
+import { Role } from "../../enums/role.enum";
 import { imageHelper, routeHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
@@ -23,7 +24,6 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
 
   const userState = useAppSelector((state) => state.user);
   const productState = useAppSelector((state) => state.product);
-
   const imgsrc = product.images && imageHelper.getBase64(product.images[0]);
 
   const dispatch = useAppDispatch();
@@ -67,15 +67,16 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
   };
 
   useEffect(() => {
-    if (!productState.favorites) return;
+    if (userState.user.role !== Role.Customer && !productState.favorites)
+      return;
     const isFav = productState.favorites.find(
       (favorite) => favorite.productId.id === product.id
     );
     setIsFavorite(!!isFav);
-  }, [product, productState.favorites]);
+  }, [product, productState.favorites, userState]);
 
   return (
-    <div className="relative min-w-48 w-56 max-h-60 shadow-md bg-white p-3 m-3 rounded-md  flex flex-col justify-around cursor-pointer hover:shadow-xl transition-shadow duration-300">
+    <div className="relative min-w-[12rem] w-56 max-h-60 shadow-md bg-white p-3 m-3 rounded-md  flex flex-col justify-around cursor-pointer hover:shadow-xl transition-shadow duration-300">
       <div
         onClick={editable ? handleEdit : handleFavorite}
         className={`absolute shadow-md -top-3 -right-3 w-10 h-10 rounded-full bg-white flex justify-center items-center ${
@@ -100,7 +101,7 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
           <img
             src={imgsrc}
             alt="asd"
-            className=" hover:scale-125 hover:shadow-md hover:rounded-md mt-1 transition-all duration-300"
+            className="max-w-[200px] max-h-[100px] hover:scale-125 hover:shadow-md hover:rounded-md mt-1 transition-all duration-300"
           />
         ) : (
           <span className="text-red-700 italic ">

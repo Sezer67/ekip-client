@@ -20,7 +20,11 @@ import send from "../assets/icons/send.png";
 import idea from "../assets/icons/idea.png";
 import history from "../assets/icons/history.png";
 import back_page from "../assets/icons/left.png";
+import mail from "../assets/icons/email.png";
+import freeze from "../assets/icons/winter.png";
 export {
+  freeze,
+  mail,
   back_page,
   idea,
   history,

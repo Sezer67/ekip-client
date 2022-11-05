@@ -1,6 +1,6 @@
 export enum Idea {
-  Suggestion = 1,
   Complaint = 0,
+  Suggestion = 1,
 }
 export enum IdeaTexts {
   Suggestion = "Öneri",

@@ -64,14 +64,17 @@ const Idea = () => {
     setIsHistoryShow(!isHistoryShow);
   };
 
-  const CollapseHeader: React.FC<{ subject: string; date: Date }> = ({
-    subject,
-    date,
-  }) => {
+  const CollapseHeader: React.FC<{
+    subject: string;
+    date: Date;
+    type: number;
+  }> = ({ subject, date, type }) => {
     return (
       <div className="flex flex-row justify-between items-center">
         <div>
-          <span className="text-primary font-semibold">ÖNERİ</span>
+          <span className="text-primary font-semibold">
+            {ideaEnum.IdeaTexts[ideaEnum.Idea[type] as never]}
+          </span>
           <span className="pl-3 capitalize">{subject}</span>
         </div>
         <span className="text-sm">
@@ -94,6 +97,7 @@ const Idea = () => {
                     <CollapseHeader
                       subject={idea.subject}
                       date={idea.createdAt}
+                      type={idea.type}
                     />
                   }
                   key={idea.id}

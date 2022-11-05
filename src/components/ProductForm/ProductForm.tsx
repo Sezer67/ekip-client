@@ -38,6 +38,8 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
     visible: boolean;
   }>({ url: "", visible: false });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [form] = Form.useForm();
+
   const selectedProduct = useAppSelector(
     (state) => state.product.selectedProduct
   );
@@ -99,7 +101,6 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
             imageUrls.push(uri);
           });
         }
-        debugger;
 
         if (imageUrls.length > 0) {
           editFormData.images = imageUrls;
@@ -123,6 +124,7 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
           status: "success",
         })
       );
+      form.resetFields();
     } catch (error: any) {
       dispatch(
         setNotification({
@@ -136,7 +138,6 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
     } finally {
       setIsLoading(false);
     }
-    console.log(formData);
   };
 
   if (isEdit && !selectedProduct.id) {
@@ -148,6 +149,7 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
       <Form
         layout="vertical"
         onFinish={handleSave}
+        form={form}
         initialValues={{
           name: isEdit ? selectedProduct.name : undefined,
           price: isEdit ? selectedProduct.price : undefined,

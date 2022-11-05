@@ -56,7 +56,7 @@ const MySider = () => {
       onClick: () => routeHelper.navigation(navigate, pathEnum.Path.FOLLOW),
     },
     {
-      label: "Öneri-Şikayet",
+      label: "Öneri ve Şikayet",
       key: pathEnum.Path.IDEA,
       icon: <img src={icons.idea} alt="" />,
       onClick: () => routeHelper.navigation(navigate, pathEnum.Path.IDEA),
@@ -95,14 +95,26 @@ const MySider = () => {
       icon: <img src={icons.wallet} alt="" />,
       onClick: () => routeHelper.navigation(navigate, pathEnum.Path.BALANCE),
     },
+    {
+      label: "Öneri ve Şikayet",
+      key: pathEnum.Path.IDEA,
+      icon: <img src={icons.idea} alt="" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.IDEA),
+    },
   ];
 
   const adminMenuItem: ItemType[] = [
     {
       label: "Kullanıcılar",
       key: pathEnum.Path.HOME,
-      icon: <img src={icons.user} alt="bla" className="w-6 h-6" />,
+      icon: <img src={icons.user} alt="bla" className="w-6" />,
       onClick: () => routeHelper.navigation(navigate, pathEnum.Path.HOME),
+    },
+    {
+      label: "Öneri ve Şikayetler",
+      key: pathEnum.Path.USERIDEA,
+      icon: <img src={icons.mail} alt="mail" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.USERIDEA),
     },
   ];
 

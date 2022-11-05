@@ -2,7 +2,7 @@ import { Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { icons } from "../../constants";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { MessageType } from "../../redux/types/chat.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { chatService } from "../../service";
@@ -23,6 +23,7 @@ const Chat: React.FC<PropsType> = ({
     MessageType | undefined
   >();
 
+  const userState = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const scrollToBottom = () => {
@@ -71,7 +72,7 @@ const Chat: React.FC<PropsType> = ({
   useEffect(() => {
     socket.connect();
 
-    socket.on("socket-message", (data: MessageType) => {
+    socket.on(userState.user.id, (data: MessageType) => {
       console.log("data : ", data);
       setMessages([...messages, data]);
     });

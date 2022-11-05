@@ -22,6 +22,7 @@ import {
   setUserMinusBalance,
 } from "../../redux/userSlice/userSlice";
 import { icons } from "../../constants";
+import { Role } from "../../enums/role.enum";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
@@ -65,12 +66,17 @@ const Product = () => {
   }, [dispatch, location.pathname, productState]);
 
   useEffect(() => {
-    if (!productState.favorites && !productState.selectedProduct.id) return;
+    if (
+      userState.user.role !== Role.Customer &&
+      !productState.favorites &&
+      !productState.selectedProduct.id
+    )
+      return;
     const isFav = productState.favorites.find(
       (favorite) => favorite.productId.id === productState.selectedProduct.id
     );
     setIsFavorite(!!isFav);
-  }, [productState.favorites, productState.selectedProduct.id]);
+  }, [productState.favorites, productState.selectedProduct.id, userState]);
 
   useEffect(() => {
     const isFollowControl = userState.followers.find(
@@ -179,7 +185,7 @@ const Product = () => {
 
   return (
     <div className="m-3 min-h-[87vh] flex flex-col justify-center items-center">
-      <div className="flex flex-row justify-around items-stretch flex-wrap">
+      <div className="w-full flex flex-row justify-around items-stretch flex-wrap">
         {productState.selectedProduct.images &&
           productState.selectedProduct.images.length > 0 && (
             <div className="w-full flex justify-center items-center md:w-1/2 lg:max-w-[800px] p-4 bg-white rounded-md">
@@ -197,9 +203,9 @@ const Product = () => {
             productState.selectedProduct.images.length > 0
               ? "mt-3 md:w-1/2 lg:w-auto md:mt-0"
               : ""
-          } w-full  `}
+          } w-full flex justify-center items-center `}
         >
-          <div className="w-full p-4 bg-white rounded-md">
+          <div className="w-full max-w-[800px] h-auto p-4 bg-white rounded-md">
             <table className="w-full">
               <tbody className="w-full">
                 <tr className="border-b w-full h-10">

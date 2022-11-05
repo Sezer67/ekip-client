@@ -15,5 +15,6 @@ export enum Path {
   SALES = "/sales",
   USERS = "/users",
   IDEA = "/idea",
+  USERIDEA = "/users-idea",
   NOT_FOUND = "*",
 }

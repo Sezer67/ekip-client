@@ -31,7 +31,6 @@ const HomeProducts: React.FC<{ products: ProductStateType[] }> = ({
   }, [size]);
 
   useEffect(() => {
-    debugger;
     const isNext = (page + 1) * perPage < products.length;
     const isPrev = page !== 0;
     setIsChangePageNumber({ isPrev, isNext });

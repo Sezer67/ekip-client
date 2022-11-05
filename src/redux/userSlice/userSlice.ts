@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Role } from "../../enums/role.enum";
 import { ResponseLoginType } from "../../types/user-service.types";
-import { FollowType, UserStateType } from "../types/user.types";
+import { FollowType, UserStateType, UserType } from "../types/user.types";
 
 const initialState: UserStateType = {
   user: {
@@ -16,6 +16,7 @@ const initialState: UserStateType = {
     token: undefined,
   },
   followers: [],
+  allUsers: [],
 };
 
 const userSlice = createSlice({
@@ -61,6 +62,9 @@ const userSlice = createSlice({
         (follow) => follow.id !== action.payload.id
       );
     },
+    setAllUsers: (state, action: PayloadAction<UserType[]>) => {
+      state.allUsers = action.payload;
+    },
   },
 });
 
@@ -73,4 +77,5 @@ export const {
   setFollowers,
   addFollower,
   removeFollower,
+  setAllUsers,
 } = userSlice.actions;

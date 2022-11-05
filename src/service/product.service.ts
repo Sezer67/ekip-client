@@ -2,13 +2,14 @@ import { AxiosPromise } from "axios";
 import { axiosInstance } from "../axios.util";
 import { api_url } from "../configs/url.config";
 import {
+  BestSalesType,
   FavoriteStateType,
   OrderStateType,
   ProductStateType,
   SalesResultType,
-  SalesType,
 } from "../redux/types/product.type";
 import {
+  BestSalesResponseType,
   CreateOrderType,
   CreateProductType,
   SalesYearlyType,
@@ -25,6 +26,11 @@ export const getTrendProducts = (): AxiosPromise<ProductStateType[]> => {
 };
 export const getNewProducts = (): AxiosPromise<ProductStateType[]> => {
   return axiosInstance.get(`${api_url}/product/new`);
+};
+export const getBestSalesProducts = (): AxiosPromise<
+  BestSalesResponseType[]
+> => {
+  return axiosInstance.get(`${api_url}/order/best-sales`);
 };
 
 export const getSellerProducts = (): AxiosPromise<ProductStateType[]> => {
@@ -73,12 +79,16 @@ export const deleteOrder = (id: string): AxiosPromise<string> => {
   return axiosInstance.delete(`${api_url}/order/${id}`);
 };
 
-export const getSales = (): AxiosPromise<SalesResultType> => {
-  return axiosInstance.get(`${api_url}/order/@me/sales`);
+export const getSales = (url: string): AxiosPromise<SalesResultType> => {
+  return axiosInstance.get(url);
 };
 
 export const getSalesYearly = (): AxiosPromise<SalesYearlyType[]> => {
   return axiosInstance.get(`${api_url}/order/@me/sales/year`);
+};
+
+export const getBestSaledProduct = (): AxiosPromise<BestSalesResponseType> => {
+  return axiosInstance.get(`${api_url}/order/@me/sales/stat`);
 };
 
 export const addProduuctToFavorites = (data: {

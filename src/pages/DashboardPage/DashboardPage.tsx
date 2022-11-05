@@ -5,11 +5,14 @@ import FilterDrawer from "../../components/FilterDrawer/FilterDrawer";
 import CategoryProducts from "../../components/Products/CategoryProducts";
 import HomeProducts from "../../components/Products/HomeProducts/HomeProducts";
 import { api_url } from "../../configs/url.config";
-import { routeHelper, sorterHelper } from "../../helpers";
+import { convertHelper, routeHelper, sorterHelper } from "../../helpers";
 import { setCategory } from "../../redux/categorySlice/categorySlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setProducts } from "../../redux/productSlice/productSlice";
-import { ProductStateType } from "../../redux/types/product.type";
+import {
+  BestSalesType,
+  ProductStateType,
+} from "../../redux/types/product.type";
 import { categoryService, productService } from "../../service";
 import { ProductKeysType } from "../../types/product-service.type";
 type PositionType = "right";
@@ -18,7 +21,7 @@ const DashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Anasayfa");
   const [trendProducts, setTrendProducts] = useState<ProductStateType[]>([]);
   const [newProducts, setNewProducts] = useState<ProductStateType[]>([]);
-  const [bestSales, setBestSales] = useState<ProductStateType[]>([]);
+  const [bestSales, setBestSales] = useState<BestSalesType[]>([]);
   const [filterProducts, setFilterProducts] = useState<ProductStateType[]>([]);
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
 
@@ -28,14 +31,6 @@ const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const position: PositionType[] = ["right"];
   useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const { data } = await categoryService.getCategories();
-        dispatch(setCategory(data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
     const getTrendProducts = async () => {
       try {
         const { data } = await productService.getTrendProducts();
@@ -53,9 +48,21 @@ const DashboardPage: React.FC = () => {
         console.log(error);
       }
     };
-    getCategories();
+
+    const bestSalesProducts = async () => {
+      try {
+        const { data } = await productService.getBestSalesProducts();
+        const convertedProducts =
+          convertHelper.convertBestSalesResponseToProducts(data);
+        setBestSales(convertedProducts);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getNewProducts();
     getTrendProducts();
+    bestSalesProducts();
   }, [dispatch]);
 
   useEffect(() => {
@@ -150,33 +157,33 @@ const DashboardPage: React.FC = () => {
         <Tabs.TabPane tab="Anasayfa" key="Anasayfa">
           <div className="flex flex-col">
             <div className="flex flex-row pl-3">
-              <div className="border-b-2 border-thirdy w-6 " />
-              <span className="border-2 border-b-0 border-thirdy px-3 pb-1  mb-0 w-auto rounded-t-md pt-2 font-semibold text-primary">
-                Trend Ürünler
+              <div className="border-b-2 border-primary w-6 " />
+              <span className="border-2 border-b-0 border-primary px-3 pb-1  mb-0 w-auto rounded-t-md pt-2 font-semibold text-primary">
+                Trendler
               </span>
-              <div className="border-b-2 border-thirdy  w-3/4 " />
+              <div className="border-b-2 border-primary  w-full " />
             </div>
             <HomeProducts products={trendProducts} key="trend" />
           </div>
           <div className="flex flex-col">
-            <div className="flex flex-row pl-3  shadow-secondary">
-              <div className="border-b-2 border-thirdy w-6 " />
-              <span className="border-2 border-b-0 border-thirdy px-3 pb-1  mb-0 w-auto rounded-t-md pt-2 font-semibold text-primary">
-                En Yeni Ürünler
+            <div className="flex flex-row pl-3  ">
+              <div className="border-b-2 border-orange w-6 " />
+              <span className="border-2 border-b-0 whitespace-nowrap border-orange px-3 pb-1  mb-0 w-auto rounded-t-md pt-2 font-semibold text-primary">
+                En Yeniler
               </span>
-              <div className="border-b-2  border-thirdy  w-3/4 " />
+              <div className="border-b-2  border-orange  w-full " />
             </div>
             <HomeProducts products={newProducts} key="new" />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-row pl-3  shadow-secondary">
-              <div className="border-b-2 border-thirdy w-6 " />
-              <span className="border-2 border-b-0 border-thirdy px-3 pb-1  mb-0 w-auto rounded-t-md pt-2 font-semibold text-primary">
-                En Çok Satılan Ürünler
+              <div className="border-b-2 border-secondary w-6 " />
+              <span className="border-2 border-b-0 whitespace-nowrap border-secondary px-3 pb-1  mb-0 w-auto rounded-t-md pt-2 font-semibold text-primary">
+                Çok Satanlar
               </span>
-              <div className="border-b-2  border-thirdy  w-2/3 " />
+              <div className="border-b-2  border-secondary  w-full " />
             </div>
-            <HomeProducts products={newProducts} key="new" />
+            <HomeProducts products={bestSales} key="new" />
           </div>
         </Tabs.TabPane>
 
