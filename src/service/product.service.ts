@@ -91,6 +91,13 @@ export const getBestSaledProduct = (): AxiosPromise<BestSalesResponseType> => {
   return axiosInstance.get(`${api_url}/order/@me/sales/stat`);
 };
 
+export const getAllSalesByDate = (data: {
+  startDate: Date;
+  endDate: Date;
+}): AxiosPromise<OrderStateType[]> => {
+  return axiosInstance.post(`${api_url}/order/all-sales`, data);
+};
+
 export const addProduuctToFavorites = (data: {
   productId: string;
 }): AxiosPromise<FavoriteStateType> => {

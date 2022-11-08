@@ -22,7 +22,20 @@ import history from "../assets/icons/history.png";
 import back_page from "../assets/icons/left.png";
 import mail from "../assets/icons/email.png";
 import freeze from "../assets/icons/winter.png";
+import open_mail from "../assets/icons/open-mail.png";
+import order_list from "../assets/icons/order-list.png";
+import not_freeze from "../assets/icons/not-freeze.png";
+import trend from "../assets/icons/trend.png";
+import best_seller from "../assets/icons/best-seller.png";
+import _new from "../assets/icons/new.png";
+
 export {
+  trend,
+  best_seller,
+  _new,
+  not_freeze,
+  order_list,
+  open_mail,
   freeze,
   mail,
   back_page,

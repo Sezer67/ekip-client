@@ -1,7 +1,6 @@
 import { Button, InputNumber, Tooltip } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Slider from "react-slick";
 import { convertHelper, imageHelper, routeHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
@@ -14,20 +13,28 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { productsSliderSettings } from "./product.config";
 import ProductCard from "../../components/Products/ProductCard";
+import ImgsViewer from "react-images-viewer";
 import { api_url } from "../../configs/url.config";
-import { setNotification } from "../../redux/userSlice/notificationSlice";
+import {
+  setIsLoading,
+  setNotification,
+} from "../../redux/userSlice/notificationSlice";
 import { pathEnum, roleEnum } from "../../enums";
 import {
   addFollower,
   setUserMinusBalance,
 } from "../../redux/userSlice/userSlice";
-import { icons } from "../../constants";
+import { gifs, icons } from "../../constants";
 import { Role } from "../../enums/role.enum";
+import { getBase64 } from "../../helpers/image.helper";
+import ImagesView from "../../components/ImagesView/ImagesView";
+import moment from "moment";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
   const categoryState = useAppSelector((state) => state.category);
   const userState = useAppSelector((state) => state.user);
+  const loading = useAppSelector((state) => state.notification.isLoading);
 
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isFollow, setIsFollow] = useState<boolean>(false);
@@ -39,11 +46,42 @@ const Product = () => {
   const location = useLocation();
   const navigation = useNavigate();
   const dispatch = useAppDispatch();
+
+  const ownerFullname = useMemo(() => {
+    return (
+      productState.selectedProduct.ownerId.firstName +
+      " " +
+      productState.selectedProduct.ownerId.lastName
+    );
+  }, [productState.selectedProduct.ownerId]);
+
+  const productStatus = useMemo(() => {
+    return {
+      isTrend: productState.globalDatas.trends.find(
+        (data) => data.id === productState.selectedProduct.id
+      )
+        ? true
+        : false,
+      isNew: productState.globalDatas.new.find(
+        (data) => data.id === productState.selectedProduct.id
+      )
+        ? true
+        : false,
+      isBestSale: productState.globalDatas.bestSales.find(
+        (data) => data.id === productState.selectedProduct.id
+      )
+        ? true
+        : false,
+    };
+  }, [productState.selectedProduct, productState.globalDatas]);
+
   useEffect(() => {
     const getProductById = async (id: string) => {
+      dispatch(setIsLoading({ isLoading: true }));
       const { data } = await productService.getProductById(id);
       setTotalPrice(data.price.toString());
       dispatch(setSelectedProduct(data));
+      dispatch(setIsLoading({ isLoading: false }));
     };
 
     const getProdutcsByCategories = async (categories: string) => {
@@ -80,7 +118,11 @@ const Product = () => {
 
   useEffect(() => {
     const isFollowControl = userState.followers.find(
-      (followed) => followed.id === productState.selectedProduct.ownerId.id
+      (followed) =>
+        followed.id ===
+        (productState.selectedProduct.ownerId
+          ? productState.selectedProduct.ownerId.id
+          : userState.user.id)
     );
     setIsFollow(!!isFollowControl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,172 +224,128 @@ const Product = () => {
       );
     } catch (error) {}
   };
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
 
   return (
-    <div className="m-3 min-h-[87vh] flex flex-col justify-center items-center">
-      <div className="w-full flex flex-row justify-around items-stretch flex-wrap">
-        {productState.selectedProduct.images &&
-          productState.selectedProduct.images.length > 0 && (
-            <div className="w-full flex justify-center items-center md:w-1/2 lg:max-w-[800px] p-4 bg-white rounded-md">
-              <img
-                src={imageHelper.getBase64(
-                  productState.selectedProduct.images[0]
-                )}
-                alt=""
-              />
-            </div>
-          )}
-        <div
-          className={`${
-            productState.selectedProduct.images &&
-            productState.selectedProduct.images.length > 0
-              ? "mt-3 md:w-1/2 lg:w-auto md:mt-0"
-              : ""
-          } w-full flex justify-center items-center `}
-        >
-          <div className="w-full max-w-[800px] h-auto p-4 bg-white rounded-md">
-            <table className="w-full">
-              <tbody className="w-full">
-                <tr className="border-b w-full h-10">
-                  <td
-                    className={`pl-3 ${
-                      userState.user.role !== roleEnum.Role.Customer
-                    } whitespace-nowrap`}
-                  >
-                    <span className="text-orange font-semibold text-xl ">
-                      {productState.selectedProduct.name.toUpperCase()}
-                    </span>
-                  </td>
-                  {userState.user.role === roleEnum.Role.Customer && (
-                    <td className="float-right">
-                      <button className="text-red-500">
-                        <img
-                          src={
-                            isFavorite
-                              ? icons.fill_favorite
-                              : icons.empty_favorite
-                          }
-                          alt="fav"
-                        />
-                      </button>
-                    </td>
-                  )}
-                </tr>
-                <tr className="border-b w-full h-10">
-                  <td className="pl-3">
-                    <span className="text-thirdy font-semibold text-lg">
-                      {productState.selectedProduct.price} ₺
-                    </span>
-                  </td>
-                </tr>
-                <tr className="border-b w-full h-10">
-                  <td className="pl-3">
-                    <span className="text-primary font-semibold ">Adet</span>
-                  </td>
-                  <td className="w-1/2">
-                    <InputNumber
-                      disabled={userState.user.role !== roleEnum.Role.Customer}
-                      className="!w-full"
-                      placeholder="Adet"
-                      value={piece}
-                      min={1}
-                      max={productState.selectedProduct.stock}
-                      onChange={handlePieceChange}
+    <div className="p-3 w-full min-h-[87vh] flex flex-col justify-start items-center">
+      <div className="w-full max-w-[1200px]">
+        <div className="w-full flex flex-col justify-start">
+          <h2 className="font-bold font-sans text-xl">
+            {productState.selectedProduct.name}
+          </h2>
+          <div className="w-full flex flex-row justify-between items-center">
+            <div>Değenlendirmer vs.</div>
+            <div>
+              {userState.user.role === Role.Customer && (
+                <Tooltip
+                  title={isFavorite ? "Favoriden Kaldır" : "Favorilerime Ekle"}
+                  placement="leftTop"
+                >
+                  <button className="text-red-500">
+                    <img
+                      src={
+                        isFavorite ? icons.fill_favorite : icons.empty_favorite
+                      }
+                      alt="fav"
                     />
-                  </td>
-                </tr>
-
-                <tr className="border-b w-full h-10">
-                  <td className="pl-3">
-                    <span className="text-primary font-semibold ">
-                      Sepet Tutarı
-                    </span>
-                  </td>
-                  <td className="text-thirdy font-semibold text-lg">
-                    {totalPrice} ₺
-                  </td>
-                </tr>
-                <tr className="border-b w-full h-10">
-                  <td className="pl-3">
-                    <span className="text-primary font-semibold ">Satıcı</span>
-                  </td>
-                  <td className="text-secondary font-semibold text-lg">
-                    {productState.selectedProduct.ownerId &&
-                      productState.selectedProduct.ownerId.firstName.concat(
-                        " ",
-                        productState.selectedProduct.ownerId.lastName
-                      )}
-                  </td>
-                </tr>
-                <tr className="w-full border-b h-10">
-                  <td className="pl-3">
-                    <span className="text-primary font-semibold ">
-                      Kategori
-                    </span>
-                  </td>
-                  <td className="">
-                    {productState.selectedProduct.categories.map((id) => {
-                      const category = categoryState.initialState.find(
-                        (cat) => cat.id === id
-                      );
-                      return (
-                        <span className="p-1 px-2 mr-2 border bg-pink">
-                          {category?.name}
-                        </span>
-                      );
-                    })}
-                  </td>
-                </tr>
-                {userState.user.role === roleEnum.Role.Customer && (
-                  <tr className="w-full h-10">
-                    <td>
-                      {isFollow ? (
-                        <Tooltip title="Takibi Bırak">
-                          <Button onClick={handleFollow} className="mt-3">
-                            Satıcı Takip Ediliyor
-                          </Button>
-                        </Tooltip>
-                      ) : (
-                        <Button onClick={handleFollow} className="mt-3">
-                          Satıcıyı Takip et
-                        </Button>
-                      )}
-                    </td>
-                    <td className="float-right mt-3">
-                      <Button type="primary" onClick={handleClick}>
-                        Sipariş Ver
-                      </Button>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  </button>
+                </Tooltip>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-
-      {productState.products.length > 0 && (
-        <>
-          <div className="container px-auto  mt-6">
-            <h3 className="text-primary font-bold  underline-offset-1 text-xl">
-              BENZER ÜRÜNLER
-            </h3>
-            <div className="">
-              <Slider {...productsSliderSettings}>
-                {productState.products
-                  .filter(
-                    (product) => product.id !== productState.selectedProduct.id
-                  )
-                  .map((product) => (
-                    <div key={product.id}>
-                      <ProductCard product={product} />
+        <div className="w-full my-4">
+          {productState.selectedProduct.images &&
+            productState.selectedProduct.images.length > 0 && (
+              <ImagesView images={productState.selectedProduct.images} />
+            )}
+        </div>
+        <div className="w-full mt-8 flex flex-row justify-between">
+          <div className="w-2/3">
+            <div>
+              <div className="flex flex-row items-center space-x-2">
+                <h2 className="font-bold font-sans text-lg text-primary ">
+                  {productState.selectedProduct.name}
+                </h2>
+                <h2>&#x2022;</h2>
+                <h2 className="font-bold font-sans text-lg text-primary ">
+                  Satıcı:{" "}
+                  <span className="text-secondary">{ownerFullname}</span>
+                </h2>
+              </div>
+              <span className="text-thirdy">
+                {moment(productState.selectedProduct.createdAt).format(
+                  "DD/MM/YYY"
+                )}{" "}
+                tarihinden itibaren satışta
+              </span>
+            </div>
+            <div className=" border  h-[1px] my-4 " />
+            <div className="flex flex-col space-y-5">
+              {productStatus.isTrend && (
+                <div className="flex flex-row items-center">
+                  <img src={icons.trend} alt="" className="mr-4" />
+                  <span className="font-semibold text-base font-sans">
+                    Çok Tıklananlar Listesinde
+                  </span>
+                </div>
+              )}
+              {productStatus.isNew && (
+                <div className="flex flex-row items-center">
+                  <img src={icons._new} alt="" className="mr-4" />
+                  <span className="font-semibold text-base font-sans">
+                    En Yeniler Arasında
+                  </span>
+                </div>
+              )}
+              {productStatus.isBestSale && (
+                <div className="flex flex-row items-center">
+                  <img src={icons.best_seller} alt="" className="mr-4" />
+                  <span className="font-semibold text-base font-sans">
+                    Çok Satılanlardan
+                  </span>
+                </div>
+              )}
+            </div>
+            {(productStatus.isTrend ||
+              productStatus.isNew ||
+              productStatus.isBestSale) && (
+              <div className=" border h-[1px] my-4 " />
+            )}
+            {/* ait oldugu kategoriler */}
+            <div>
+              <h4 className="font-semibold text-base font-sans">
+                Ürünün Kategorileri
+              </h4>
+              <div className="w-full flex flex-row flex-wrap mt-3">
+                {productState.selectedProduct.categories.map((id) => {
+                  const category = categoryState.initialState.find(
+                    (cat) => cat.id === id
+                  );
+                  return (
+                    <div className="p-1 px-4 mr-2 border border-slate-200 shadow-sm rounded-sm bg-pink">
+                      {category?.name}
                     </div>
-                  ))}
-              </Slider>
+                  );
+                })}
+              </div>
+            </div>
+            <div className=" border  h-[1px] my-4 " />
+            {/* ürün description */}
+            <div>
+              <h4 className="font-semibold text-base font-sans">
+                Ürün Hakkında
+              </h4>
             </div>
           </div>
-        </>
-      )}
+          <div className="w-1/4 sticky">Card</div>
+        </div>
+      </div>
     </div>
   );
 };

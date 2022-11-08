@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ProductCard from "../../components/Products/ProductCard";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setFavorites } from "../../redux/productSlice/productSlice";
-import { productService } from "../../service";
+import { useAppSelector } from "../../redux/hooks";
 
 const Favorite = () => {
   const productState = useAppSelector((state) => state.product);
-  const dispatch = useAppDispatch();
 
   return (
     <div className="p-3">

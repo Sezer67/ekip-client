@@ -21,16 +21,27 @@ NOTIFICATION ALL
 TAKIP ETTIKLERIM (customer follow page desing + seller -)
 (MESAJ)
 AUTH DOLDUĞUNDA LOGIN E AT
-HER ISTEKTEN YANIT DÖNENE KADAR LOADING GLOBAL LOADING
+HER ISTEKTEN YANIT DÖNENE KADAR LOADING GLOBAL LOADING (notf state e loading prop u eklendi onun üzernde işlemler yapılacak.)
+// customer okey.
 
 SELLER
 en çok satılan ürünüm , en sadık müşterim query i nasıl kuracağım
 satışlarım kısmındaki ilk tabloya ay değiştirme eklenmeli ++++
 
-admin günlük satış listesi (query)
+admin günlük satış listesi (query) ++++
 admin color pick;
-öneri kutusu
+öneri kutusu +++
+öneriden update tammalanacak ++
 öneriye destek +++
-öneri sayfasında bir de şikayet kısmı
+öneri sayfasında bir de şikayet kısmı +++
 
+add column isFreeze in user table; ++++
 en çok satanlar
+
+BUGS
+hesap log out işleminde followers state i sıfırlanacak. **fixed**
+seller hesabı my products page de product card click düzenlenecek. **fixed**
+öneri şikayet sayfasında admin yanıtı yerine kullanıcı description gösteriliyor. **fixed**
+hesap isFreeze ise login olamayacak. Uyarı yesin.**need test**
+user update den role kaldırılacak.
+ProductCard min h ayarlarsın

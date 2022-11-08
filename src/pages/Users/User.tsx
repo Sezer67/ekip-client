@@ -3,29 +3,43 @@ import { ColumnsType } from "antd/lib/table";
 import React, { useEffect } from "react";
 import { axiosInstance } from "../../axios.util";
 import { api_url } from "../../configs/url.config";
-import { icons } from "../../constants";
+import { gifs, icons } from "../../constants";
 import { Role, RoleText } from "../../enums/role.enum";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { UserType } from "../../redux/types/user.types";
-import { setAllUsers } from "../../redux/userSlice/userSlice";
+import { setIsLoading } from "../../redux/userSlice/notificationSlice";
+import { setAllUsers, updateUserById } from "../../redux/userSlice/userSlice";
+import { userService } from "../../service";
 import { colors, RoleFilterStatus, textColors } from "./user.config";
 
 const User = () => {
   const userState = useAppSelector((state) => state.user);
-
+  const loading = useAppSelector((state) => state.notification.isLoading);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getAllUsers = async () => {
       try {
+        dispatch(setIsLoading({ isLoading: true }));
         const { data } = await axiosInstance.get(`${api_url}/user/all`);
         dispatch(setAllUsers(data));
       } catch (error) {
         console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
       }
     };
     getAllUsers();
   }, [dispatch]);
+
+  const handleFreeze = async (id: string, isFreeze: boolean) => {
+    try {
+      const { data } = await userService.updateUser(id, { isFreeze });
+      dispatch(updateUserById({ id, isFreeze }));
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const columns: ColumnsType<UserType> = [
     {
@@ -108,17 +122,38 @@ const User = () => {
       title: "",
       dataIndex: "actions",
       key: "actions",
-      render: () => (
+      render: (_, record) => (
         <div className="flex flex-row">
-          <div className="cursor-pointer w-6 h-6">
-            <Tooltip title="Hesabı Dondur">
-              <img src={icons.freeze} alt="freeze" />
-            </Tooltip>
-          </div>
+          {record.isFreeze ? (
+            <div
+              onClick={() => handleFreeze(record.id, !record.isFreeze)}
+              className="cursor-pointer w-6 h-6"
+            >
+              <Tooltip title="Hesabı Aktif Et">
+                <img src={icons.not_freeze} alt="freeze" />
+              </Tooltip>
+            </div>
+          ) : (
+            <div
+              onClick={() => handleFreeze(record.id, !record.isFreeze)}
+              className="cursor-pointer w-6 h-6"
+            >
+              <Tooltip title="Hesabı Dondur">
+                <img src={icons.freeze} alt="freeze" />
+              </Tooltip>
+            </div>
+          )}
         </div>
       ),
     },
   ];
+
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
 
   return (
     <div className="p-3">

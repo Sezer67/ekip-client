@@ -15,7 +15,11 @@ import notfound from "./assets/images/notfound.svg";
 import { Path } from "./enums/path.enum";
 import { setFavorites } from "./redux/productSlice/productSlice";
 import { FollowType } from "./redux/types/user.types";
-import { setNotification } from "./redux/userSlice/notificationSlice";
+import {
+  setIsLoading,
+  setNotification,
+} from "./redux/userSlice/notificationSlice";
+import { gifs } from "./constants";
 
 const LoginPage = React.lazy(() => import("./pages/LoginPage/LoginPage"));
 const RegisterPage = React.lazy(
@@ -41,10 +45,14 @@ const Follow = React.lazy(() => import("./pages/Follow/Follow"));
 const Idea = React.lazy(() => import("./pages/Idea/Idea"));
 const User = React.lazy(() => import("./pages/Users/User"));
 const UsersIdea = React.lazy(() => import("./pages/Idea/UsersIdea"));
+const IdeaEdit = React.lazy(() => import("./pages/IdeaEdit/IdeaEdit"));
+const AllSales = React.lazy(() => import("./pages/Sales/AllSales"));
+
 function App() {
   const dispatch = useAppDispatch();
 
   const [isAuth, setIsAuth] = useState<boolean | undefined>(undefined);
+
   const userState = useAppSelector((state) => state.user);
   const categoryState = useAppSelector((state) => state.category);
   const productState = useAppSelector((state) => state.product);
@@ -64,7 +72,10 @@ function App() {
       try {
         const { data } = await productService.getFavorites();
         dispatch(setFavorites(data));
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      } finally {
+      }
     };
     const getUser = async () => {
       try {
@@ -146,15 +157,21 @@ function App() {
 
   if (isAuth === undefined) {
     return (
-      <div id="app" className="bg-light">
-        <Spin size="large" />
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
       </div>
     );
   }
 
   return (
     <div id="app" className="bg-light">
-      <Suspense fallback={<Spin size="large" />}>
+      <Suspense
+        fallback={
+          <div className="w-full h-full flex justify-center items-center">
+            <img alt="" src={gifs.ripple} />
+          </div>
+        }
+      >
         <Routes>
           <Route
             path={Path.HOME}
@@ -202,7 +219,11 @@ function App() {
             {userState.user.role === Role.Admin && (
               <>
                 <Route path={Path.USERS} element={<User />} />
-                <Route path={Path.USERIDEA} element={<UsersIdea />} />
+                <Route path={Path.USERIDEA}>
+                  <Route index element={<UsersIdea />} />
+                  <Route path=":id" element={<IdeaEdit />} />
+                </Route>
+                <Route path={Path.SALES} element={<AllSales />} />
               </>
             )}
             <Route path={Path.PRODUCT}>

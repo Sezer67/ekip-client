@@ -1,7 +1,7 @@
 import { Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { icons } from "../../constants";
+import { gifs, icons } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { MessageType } from "../../redux/types/chat.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
@@ -15,7 +15,7 @@ const Chat: React.FC<PropsType> = ({
   messages,
   setMessages,
 }) => {
-  const socket = io("http://192.168.1.103:8000");
+  const socket = io("http://192.168.1.34:8000");
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [messageEnd, setMessageEnd] = useState<HTMLDivElement | null>(null);
@@ -24,6 +24,8 @@ const Chat: React.FC<PropsType> = ({
   >();
 
   const userState = useAppSelector((state) => state.user);
+  const notificationState = useAppSelector((state) => state.notification);
+
   const dispatch = useAppDispatch();
 
   const scrollToBottom = () => {
@@ -83,6 +85,13 @@ const Chat: React.FC<PropsType> = ({
       socket.disconnect();
     };
   }, [socket]);
+
+  if (notificationState.isLoading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
 
   return (
     <div className=" h-full w-full rounded-md p-4 overflow-y-auto">

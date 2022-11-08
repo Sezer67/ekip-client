@@ -2,7 +2,13 @@ import { UserType } from "./user.types";
 
 type UserFilterVariableType = Omit<
   UserType,
-  "token" | "profilePicture" | "username" | "email" | "role" | "balance"
+  | "token"
+  | "profilePicture"
+  | "username"
+  | "email"
+  | "role"
+  | "balance"
+  | "isFreeze"
 >;
 
 export type ProductStateType = {

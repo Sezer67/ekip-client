@@ -1,21 +1,37 @@
 import { Empty } from "antd";
 import React, { useEffect } from "react";
 import OrderCard from "../../components/Order/OrderCard";
-import { icons, images } from "../../constants";
+import { gifs, images } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setOrders } from "../../redux/productSlice/productSlice";
+import { setIsLoading } from "../../redux/userSlice/notificationSlice";
 import { productService } from "../../service";
 
 const MyOrders = () => {
   const productState = useAppSelector((state) => state.product);
+  const loading = useAppSelector((state) => state.notification.isLoading);
   const dispatch = useAppDispatch();
   useEffect(() => {
     const getOrders = async () => {
-      const { data } = await productService.getMyOrders();
-      dispatch(setOrders(data));
+      try {
+        dispatch(setIsLoading({ isLoading: true }));
+        const { data } = await productService.getMyOrders();
+        dispatch(setOrders(data));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
+      }
     };
     getOrders();
-  }, [dispatch]);
+  }, []);
+
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
 
   return (
     <div className="p-3 w-full flex flex-col items-center">

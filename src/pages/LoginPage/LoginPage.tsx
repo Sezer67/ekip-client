@@ -53,10 +53,11 @@ const LoginPage = () => {
         })
       );
     } catch (error: any) {
+      debugger;
       dispatch(
         setNotification({
           message: "Opppsss",
-          description: error.response.data.description,
+          description: error.response?.data.description,
           isNotification: true,
           placement: "top",
           status: "error",

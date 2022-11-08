@@ -1,25 +1,42 @@
-import { Table } from "antd";
+import { Table, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { gifs, icons } from "../../constants";
+import { pathEnum } from "../../enums";
 import { Idea, IdeaTexts } from "../../enums/idea.enum";
+import { routeHelper } from "../../helpers";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { UserType } from "../../redux/types/user.types";
+import { setIsLoading } from "../../redux/userSlice/notificationSlice";
 import { ideaService } from "../../service";
 import { IdeaType } from "../../types/idea-service.type";
 
 const UsersIdea = () => {
   const [userIdeas, setUserIdeas] = useState<IdeaType[]>([]);
+  const loading = useAppSelector((state) => state.notification.isLoading);
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     const getAllIdeas = async () => {
       try {
+        dispatch(setIsLoading({ isLoading: true }));
         const { data } = await ideaService.allIdeas();
         setUserIdeas(data);
       } catch (error) {
         console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
       }
     };
     getAllIdeas();
   }, []);
+
+  const routeIdeaEdit = (id: string) => {
+    routeHelper.navigation(navigate, `${pathEnum.Path.USERIDEA}/${id}`);
+  };
 
   const columns: ColumnsType<IdeaType> = [
     {
@@ -81,7 +98,30 @@ const UsersIdea = () => {
         </div>
       ),
     },
+    {
+      title: "",
+      dataIndex: "actions",
+      key: "actions",
+      render: (_, record: IdeaType) => (
+        <div className="w-full flex flex-row justify-start items-center">
+          <Tooltip title="Görüntüle">
+            <div
+              onClick={() => routeIdeaEdit(record.id)}
+              className="w-6 h-6 cursor-pointer"
+            >
+              <img src={icons.open_mail} alt="" />
+            </div>
+          </Tooltip>
+        </div>
+      ),
+    },
   ];
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
 
   return (
     <div className="p-3">
@@ -94,6 +134,7 @@ const UsersIdea = () => {
             filterReset: false,
             filterConfirm: "Uygula",
           }}
+          scroll={{ x: true }}
           columns={columns}
           dataSource={userIdeas}
         />

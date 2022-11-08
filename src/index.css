@@ -62,6 +62,12 @@ code {
   z-index: 999 !important;
 }
 
+.ant-image-preview-img-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
 .ant-menu > .ant-menu-item-selected,
 .ant-menu > .ant-menu-item {
   height: auto !important;

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { setUser } from "../../redux/userSlice/userSlice";
 import { userService } from "../../service";
+import { UserUpdateType } from "../../types/user-service.types";
 import { formDatas, FormValuesType, roleValues } from "./profile-page.config";
 
 const ProfilePage = () => {
@@ -29,7 +30,12 @@ const ProfilePage = () => {
   };
 
   const handleFinish = async (values: FormValuesType) => {
-    const formData = { ...values, profilePicture: dataUri };
+    const formData: UserUpdateType = {
+      profilePicture: dataUri,
+      email: values.email,
+      firstName: values.firstName,
+      lastName: values.lastName,
+    };
     try {
       const { data } = await userService.updateUser(
         userState.user.id,

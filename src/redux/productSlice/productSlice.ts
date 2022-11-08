@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  BestSalesType,
   FavoriteStateType,
   OrderStateType,
   ProductStateType,
@@ -12,6 +13,11 @@ type InitialType = {
   orders: OrderStateType[];
   salesData: SalesStateType;
   favorites: FavoriteStateType[];
+  globalDatas: {
+    trends: ProductStateType[];
+    new: ProductStateType[];
+    bestSales: BestSalesType[];
+  };
 };
 
 const initialState: InitialType = {
@@ -38,6 +44,11 @@ const initialState: InitialType = {
     sales: [],
   },
   favorites: [],
+  globalDatas: {
+    bestSales: [],
+    new: [],
+    trends: [],
+  },
 };
 
 const productSlice = createSlice({
@@ -87,6 +98,15 @@ const productSlice = createSlice({
         (fav) => fav.productId.id !== action.payload.id
       );
     },
+    setNewProducts: (state, action: PayloadAction<ProductStateType[]>) => {
+      state.globalDatas.new = action.payload;
+    },
+    setTrendProducts: (state, action: PayloadAction<ProductStateType[]>) => {
+      state.globalDatas.trends = action.payload;
+    },
+    setBestSaleProducts: (state, action: PayloadAction<BestSalesType[]>) => {
+      state.globalDatas.bestSales = action.payload;
+    },
   },
 });
 
@@ -102,4 +122,7 @@ export const {
   setFavorites,
   addFavorite,
   removeFavorite,
+  setNewProducts,
+  setTrendProducts,
+  setBestSaleProducts,
 } = productSlice.actions;

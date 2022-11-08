@@ -11,6 +11,7 @@ const initialState: UserStateType = {
     username: "",
     email: "",
     balance: 0,
+    isFreeze: false,
     role: Role.Customer,
     profilePicture: null,
     token: undefined,
@@ -46,10 +47,13 @@ const userSlice = createSlice({
         username: "",
         email: "",
         balance: 0,
+        isFreeze: false,
         role: Role.Customer,
         profilePicture: null,
         token: undefined,
       };
+      state.allUsers = [];
+      state.followers = [];
     },
     setFollowers: (state, action: PayloadAction<FollowType[]>) => {
       state.followers = action.payload;
@@ -65,6 +69,17 @@ const userSlice = createSlice({
     setAllUsers: (state, action: PayloadAction<UserType[]>) => {
       state.allUsers = action.payload;
     },
+    updateUserById: (
+      state,
+      action: PayloadAction<{ id: string; isFreeze: boolean }>
+    ) => {
+      state.allUsers = state.allUsers.map((user) => {
+        if (user.id === action.payload.id) {
+          user.isFreeze = action.payload.isFreeze;
+        }
+        return user;
+      });
+    },
   },
 });
 
@@ -78,4 +93,5 @@ export const {
   addFollower,
   removeFollower,
   setAllUsers,
+  updateUserById,
 } = userSlice.actions;

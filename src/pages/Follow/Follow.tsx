@@ -5,7 +5,10 @@ import bgwp from "../../assets/images/wp1.jpg";
 import { roleEnum } from "../../enums";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { FollowType } from "../../redux/types/user.types";
-import { setNotification } from "../../redux/userSlice/notificationSlice";
+import {
+  setIsLoading,
+  setNotification,
+} from "../../redux/userSlice/notificationSlice";
 import { ChatRoomType, MessageType } from "../../redux/types/chat.type";
 import { chatService } from "../../service";
 import { Spin } from "antd";
@@ -44,6 +47,7 @@ const Follow = () => {
   useEffect(() => {
     const getMessagesFromChatRoom = async () => {
       try {
+        dispatch(setIsLoading({ isLoading: true }));
         const { data } = await chatService.getMessagesByRoomId(selectedRoomId!);
         setMessages(data);
       } catch (error) {
@@ -56,6 +60,8 @@ const Follow = () => {
             status: "error",
           })
         );
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
       }
     };
     const createChatRoom = async () => {
@@ -64,10 +70,17 @@ const Follow = () => {
           const { data } = await chatService.createRoom({
             id: receiverUser.id,
           });
-          debugger;
           setChatRooms([...chatRooms, data]);
           setSelectedRoomId(data.id);
-        } catch (error) {}
+        } catch (error: any) {
+          setNotification({
+            message: "Beklenmeyen Hata",
+            description: error.response?.data.message,
+            isNotification: true,
+            placement: "top",
+            status: "error",
+          });
+        }
       }
     };
     if (selectedRoomId) {

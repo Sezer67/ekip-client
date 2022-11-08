@@ -15,6 +15,7 @@ export type UserType = {
   profilePicture: string | null;
   role: Role;
   balance: number;
+  isFreeze: boolean;
   token: string | undefined;
 };
 

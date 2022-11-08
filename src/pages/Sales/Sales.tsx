@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SalesLineChart from "../../components/SalesLineChart/SalesLineChart";
 import SalesYearlyChart from "../../components/SalesYearlyChart/SalesYearlyChart";
 import { api_url } from "../../configs/url.config";
-import { icons } from "../../constants";
+import { gifs, icons } from "../../constants";
 import { pathEnum } from "../../enums";
 import { convertHelper, imageHelper, routeHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -13,6 +13,7 @@ import {
   setSelectedProduct,
 } from "../../redux/productSlice/productSlice";
 import { BestSalesType } from "../../redux/types/product.type";
+import { setIsLoading } from "../../redux/userSlice/notificationSlice";
 import { productService } from "../../service";
 import { SalesYearlyType } from "../../types/product-service.type";
 
@@ -21,6 +22,8 @@ const Sales = () => {
   const [salesYearlyTaking, setSalesYearlyTaking] = useState<number>(0);
   const [activeDate, setActiveDate] = useState<Date>(new Date());
   const [bestSaledProduct, setBestSaledProduct] = useState<BestSalesType>();
+
+  const loading = useAppSelector((state) => state.notification.isLoading);
   const productState = useAppSelector((state) => state.product);
   const userState = useAppSelector((state) => state.user);
 
@@ -28,14 +31,21 @@ const Sales = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const getSales = async (date: string) => {
-      const requestUrl = routeHelper.addQueryToUrl(
-        `${api_url}/order/@me/sales`,
-        {
-          date,
-        }
-      );
-      const { data } = await productService.getSales(requestUrl);
-      dispatch(setSalesData(data));
+      dispatch(setIsLoading({ isLoading: true }));
+      try {
+        const requestUrl = routeHelper.addQueryToUrl(
+          `${api_url}/order/@me/sales`,
+          {
+            date,
+          }
+        );
+        const { data } = await productService.getSales(requestUrl);
+        dispatch(setSalesData(data));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
+      }
     };
     getSales(activeDate.toString());
   }, [activeDate, dispatch]);
@@ -74,9 +84,16 @@ const Sales = () => {
     );
   };
 
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
+
   return (
     <div>
-      <div className="w-full px-5 flex flex-row flex-wrap justify-between items-center">
+      <div className="w-full sm:px-5 flex flex-row flex-wrap justify-between items-center">
         {productState.salesData.sales.length < 1 ? (
           <div className="w-full flex justify-center items-center">
             <Empty
@@ -132,7 +149,7 @@ const Sales = () => {
           </div>
         </div>
       </div>
-      <div className="w-full px-5 flex flex-row flex-wrap justify-around items-center">
+      <div className="w-full sm:px-5 flex flex-row flex-wrap justify-around items-center">
         <div className="w-[750px]">
           <SalesYearlyChart chartDatas={salesYearlyData} />
         </div>

@@ -21,9 +21,9 @@ export type UserUpdateType =
       lastName: string;
       password?: string;
       email: string;
-      role: Role;
       profilePicture: string | null;
     }
-  | { balance: number };
+  | { balance: number }
+  | { isFreeze: boolean };
 
 export type ResponseLoginType = Omit<UserType, "password">;

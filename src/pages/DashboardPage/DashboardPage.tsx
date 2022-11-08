@@ -5,28 +5,34 @@ import FilterDrawer from "../../components/FilterDrawer/FilterDrawer";
 import CategoryProducts from "../../components/Products/CategoryProducts";
 import HomeProducts from "../../components/Products/HomeProducts/HomeProducts";
 import { api_url } from "../../configs/url.config";
+import { gifs } from "../../constants";
 import { convertHelper, routeHelper, sorterHelper } from "../../helpers";
 import { setCategory } from "../../redux/categorySlice/categorySlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setProducts } from "../../redux/productSlice/productSlice";
+import {
+  setBestSaleProducts,
+  setNewProducts,
+  setProducts,
+  setTrendProducts,
+} from "../../redux/productSlice/productSlice";
 import {
   BestSalesType,
   ProductStateType,
 } from "../../redux/types/product.type";
+import { setIsLoading } from "../../redux/userSlice/notificationSlice";
 import { categoryService, productService } from "../../service";
 import { ProductKeysType } from "../../types/product-service.type";
 type PositionType = "right";
 
 const DashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Anasayfa");
-  const [trendProducts, setTrendProducts] = useState<ProductStateType[]>([]);
-  const [newProducts, setNewProducts] = useState<ProductStateType[]>([]);
-  const [bestSales, setBestSales] = useState<BestSalesType[]>([]);
   const [filterProducts, setFilterProducts] = useState<ProductStateType[]>([]);
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
 
   const categoryState = useAppSelector((state) => state.category.initialState);
   const productState = useAppSelector((state) => state.product);
+  const loading = useAppSelector((state) => state.notification.isLoading);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const position: PositionType[] = ["right"];
@@ -34,7 +40,7 @@ const DashboardPage: React.FC = () => {
     const getTrendProducts = async () => {
       try {
         const { data } = await productService.getTrendProducts();
-        setTrendProducts(data);
+        dispatch(setTrendProducts(data));
       } catch (error) {
         console.log(error);
       }
@@ -43,7 +49,7 @@ const DashboardPage: React.FC = () => {
     const getNewProducts = async () => {
       try {
         const { data } = await productService.getNewProducts();
-        setNewProducts(data);
+        dispatch(setNewProducts(data));
       } catch (error) {
         console.log(error);
       }
@@ -51,19 +57,21 @@ const DashboardPage: React.FC = () => {
 
     const bestSalesProducts = async () => {
       try {
+        dispatch(setIsLoading({ isLoading: true }));
         const { data } = await productService.getBestSalesProducts();
         const convertedProducts =
           convertHelper.convertBestSalesResponseToProducts(data);
-        setBestSales(convertedProducts);
+        dispatch(setBestSaleProducts(convertedProducts));
       } catch (error) {
         console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
       }
     };
-
     getNewProducts();
     getTrendProducts();
     bestSalesProducts();
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     const url = routeHelper.addQueryToUrl("", {
@@ -78,10 +86,14 @@ const DashboardPage: React.FC = () => {
         categories: id,
       });
       try {
+        dispatch(setIsLoading({ isLoading: true }));
+
         const { data } = await productService.getProducts(queryUrl);
         dispatch(setProducts(data));
       } catch (error) {
         console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
       }
     };
     if (categoryId) {
@@ -147,6 +159,14 @@ const DashboardPage: React.FC = () => {
       {}
     );
   }, [activeTab, productState.products]);
+
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
+
   return (
     <div className="w-full px-4">
       <Tabs
@@ -163,7 +183,10 @@ const DashboardPage: React.FC = () => {
               </span>
               <div className="border-b-2 border-primary  w-full " />
             </div>
-            <HomeProducts products={trendProducts} key="trend" />
+            <HomeProducts
+              products={productState.globalDatas.trends}
+              key="trend"
+            />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-row pl-3  ">
@@ -173,7 +196,7 @@ const DashboardPage: React.FC = () => {
               </span>
               <div className="border-b-2  border-orange  w-full " />
             </div>
-            <HomeProducts products={newProducts} key="new" />
+            <HomeProducts products={productState.globalDatas.new} key="new" />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-row pl-3  shadow-secondary">
@@ -183,7 +206,10 @@ const DashboardPage: React.FC = () => {
               </span>
               <div className="border-b-2  border-secondary  w-full " />
             </div>
-            <HomeProducts products={bestSales} key="new" />
+            <HomeProducts
+              products={productState.globalDatas.bestSales}
+              key="new"
+            />
           </div>
         </Tabs.TabPane>
 

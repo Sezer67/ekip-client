@@ -1,39 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { notification } from "antd";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { setApiToken } from "../../axios.util";
+import { gifs } from "../../constants";
 import { useAppSelector } from "../../redux/hooks";
-import { setNotification } from "../../redux/userSlice/notificationSlice";
 import Header from "./Header";
 import MySider from "./MySider";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const userState = useAppSelector((state) => state.user);
-  // const notificationState = useAppSelector((state) => state.notification);
-
-  // const dispatch = useDispatch();
-
-  // const openNotification = () => {
-  //   notification[notificationState.status]({
-  //     message: notificationState.message,
-  //     description: notificationState.description,
-  //     placement: notificationState.placement,
-  //   });
-  //   dispatch(
-  //     setNotification({
-  //       description: "",
-  //       message: "",
-  //       status: "success",
-  //       isNotification: false,
-  //       placement: "top",
-  //     })
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   if (notificationState.isNotification) openNotification();
-  // }, [notificationState.isNotification]);
   useEffect(() => {
     if (userState.user.token) {
       setApiToken(userState.user.token);

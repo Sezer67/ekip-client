@@ -2,25 +2,34 @@ import { Button, Collapse, Form, Input, Select, Tooltip } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { icons } from "../../constants";
+import { gifs, icons } from "../../constants";
 import { ideaEnum } from "../../enums";
-import { useAppDispatch } from "../../redux/hooks";
-import { setNotification } from "../../redux/userSlice/notificationSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  setIsLoading,
+  setNotification,
+} from "../../redux/userSlice/notificationSlice";
 import { ideaService } from "../../service";
 import { IdeaType } from "../../types/idea-service.type";
 
 const Idea = () => {
   const [ideas, setIdeas] = useState<IdeaType[]>([]);
   const [isHistoryShow, setIsHistoryShow] = useState<boolean>(false);
+
+  const loading = useAppSelector((state) => state.notification.isLoading);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getMyIdeas = async () => {
       try {
+        dispatch(setIsLoading({ isLoading: true }));
         const { data } = await ideaService.getMyIdeas();
         setIdeas(data);
       } catch (error) {
         console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
       }
     };
     getMyIdeas();
@@ -32,6 +41,7 @@ const Idea = () => {
     description: string;
   }) => {
     try {
+      dispatch(setIsLoading({ isLoading: true }));
       const formData = {
         ...values,
         type: ideaEnum.Idea[values.type.key],
@@ -57,6 +67,8 @@ const Idea = () => {
           status: "error",
         })
       );
+    } finally {
+      dispatch(setIsLoading({ isLoading: false }));
     }
   };
 
@@ -83,6 +95,14 @@ const Idea = () => {
       </div>
     );
   };
+
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
+
   return (
     <div className="p-3 h-full">
       {isHistoryShow ? (
@@ -122,7 +142,7 @@ const Idea = () => {
                           </span>
                         </div>
                         <span className="indent-4 px-2 text-primary">
-                          {idea.description}
+                          {idea.answer}
                         </span>
                       </div>
                     ) : (

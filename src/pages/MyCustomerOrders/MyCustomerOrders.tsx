@@ -2,11 +2,14 @@ import { Button, Empty, Table, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { images } from "../../constants";
+import { gifs, images } from "../../constants";
 import { convertHelper } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setOrders } from "../../redux/productSlice/productSlice";
-import { setNotification } from "../../redux/userSlice/notificationSlice";
+import {
+  setIsLoading,
+  setNotification,
+} from "../../redux/userSlice/notificationSlice";
 import { setUserPlusBalance } from "../../redux/userSlice/userSlice";
 import { productService } from "../../service";
 import {
@@ -17,12 +20,21 @@ import {
 const MyCustomerOrders = () => {
   const [tableDatas, setTableDatas] = useState<OrderTableDataTypes[]>([]);
   const productState = useAppSelector((state) => state.product);
+  const loading = useAppSelector((state) => state.notification.isLoading);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getOrders = async () => {
-      const { data } = await productService.getMyPendingOrders();
-      dispatch(setOrders(data));
+      try {
+        dispatch(setIsLoading({ isLoading: true }));
+        const { data } = await productService.getMyPendingOrders();
+        dispatch(setOrders(data));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
+      }
     };
     getOrders();
   }, [dispatch]);
@@ -171,6 +183,12 @@ const MyCustomerOrders = () => {
       width: "25%",
     },
   ];
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img alt="" src={gifs.ripple} />
+      </div>
+    );
 
   return (
     <div className="p-3">

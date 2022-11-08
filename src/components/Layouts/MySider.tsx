@@ -116,6 +116,12 @@ const MySider = () => {
       icon: <img src={icons.mail} alt="mail" />,
       onClick: () => routeHelper.navigation(navigate, pathEnum.Path.USERIDEA),
     },
+    {
+      label: "Satış Listesi",
+      key: pathEnum.Path.SALES,
+      icon: <img src={icons.order_list} alt="mail" />,
+      onClick: () => routeHelper.navigation(navigate, pathEnum.Path.SALES),
+    },
   ];
 
   return (
