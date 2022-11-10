@@ -28,8 +28,9 @@ import not_freeze from "../assets/icons/not-freeze.png";
 import trend from "../assets/icons/trend.png";
 import best_seller from "../assets/icons/best-seller.png";
 import _new from "../assets/icons/new.png";
-
+import star from "../assets/icons/star.png";
 export {
+  star,
   trend,
   best_seller,
   _new,

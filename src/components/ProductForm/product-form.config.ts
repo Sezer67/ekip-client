@@ -8,6 +8,7 @@ export type FormDataType = {
   stock: number;
   images: any[];
   categories: SelectType[];
+  description: string;
 };
 type SelectType = {
   key: string;
@@ -35,6 +36,10 @@ export const FormDataVariables = {
     categories: {
       label: "Hangi Kategoriye/Kategorilere Ait",
       name: "categories",
+    },
+    descriptionn: {
+      label: "Ürün Hakkında",
+      name: "description",
     },
   },
   rules: {

@@ -89,6 +89,7 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
       images: imageUrls.length > 0 ? imageUrls : null,
       price: Number(values.price),
       stock: Number(values.stock),
+      description: values.description.trim(),
     };
 
     try {
@@ -154,6 +155,7 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
           name: isEdit ? selectedProduct.name : undefined,
           price: isEdit ? selectedProduct.price : undefined,
           stock: isEdit ? selectedProduct.stock : undefined,
+          description: isEdit ? selectedProduct.description : undefined,
           categories: isEdit ? selectedProduct.categories : [],
         }}
       >
@@ -220,6 +222,16 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
             min={1}
             className="max-w-[500px]"
             addonAfter="adet"
+          />
+        </Form.Item>
+        <Form.Item
+          label={FormDataVariables.names.descriptionn.label}
+          name={FormDataVariables.names.descriptionn.name}
+        >
+          <Input.TextArea
+            rows={4}
+            maxLength={5000}
+            className="!max-w-[500px]"
           />
         </Form.Item>
         <Form.Item

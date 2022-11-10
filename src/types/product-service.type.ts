@@ -14,6 +14,7 @@ export type CreateProductType = {
   price: number;
   stock: number;
   categories: string[];
+  description: string;
 };
 
 export type CreateOrderType = {

@@ -21,6 +21,9 @@ export type ProductStateType = {
   createdAt: Date;
   showCount: number;
   ownerId: UserFilterVariableType;
+  description: string;
+  ratingCount: number;
+  ratingPoint: number;
 };
 
 export type OrderStateType = {

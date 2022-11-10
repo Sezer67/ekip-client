@@ -36,6 +36,9 @@ const initialState: InitialType = {
     price: 0,
     showCount: 0,
     stock: 0,
+    description: "",
+    ratingCount: 0,
+    ratingPoint: 0,
   },
   orders: [],
   salesData: {

@@ -49,6 +49,9 @@ export const convertBestSalesResponseToProducts = (
       stock: 0,
       count: 0,
       sum: 0,
+      description: "",
+      ratingCount: 0,
+      ratingPoint: 0,
     };
     Object.keys(data).forEach((value) => {
       switch (value) {

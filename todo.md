@@ -38,6 +38,16 @@ admin color pick;
 add column isFreeze in user table; ++++
 en çok satanlar
 
+FEATURE
+ürünü satın alan kişiler değerlendirme yapabilsin.
+yorumların üzerinde satın alan kullanıcılardan yazsın (eğer öyleyse)
+
+backend => product comments table
+product table => description, degerlendirme sayısı , degerlendirme puanı
+
+ürün update description eklenecek seller tarafında
+customer tarafında ise rating ler ekleencek
+
 BUGS
 hesap log out işleminde followers state i sıfırlanacak. **fixed**
 seller hesabı my products page de product card click düzenlenecek. **fixed**
@@ -45,3 +55,4 @@ seller hesabı my products page de product card click düzenlenecek. **fixed**
 hesap isFreeze ise login olamayacak. Uyarı yesin.**need test**
 user update den role kaldırılacak.
 ProductCard min h ayarlarsın
+product page de refresh yiyince best statistic gidiyor app de istek yolla

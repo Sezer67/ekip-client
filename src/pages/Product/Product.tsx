@@ -1,8 +1,12 @@
 import { Button, InputNumber, Tooltip } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { convertHelper, imageHelper, routeHelper } from "../../helpers";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { convertHelper, routeHelper } from "../../helpers";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useAppWindowSize,
+} from "../../redux/hooks";
 import {
   addOrder,
   setProducts,
@@ -11,9 +15,6 @@ import {
 import { productService, userService } from "../../service";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { productsSliderSettings } from "./product.config";
-import ProductCard from "../../components/Products/ProductCard";
-import ImgsViewer from "react-images-viewer";
 import { api_url } from "../../configs/url.config";
 import {
   setIsLoading,
@@ -26,7 +27,6 @@ import {
 } from "../../redux/userSlice/userSlice";
 import { gifs, icons } from "../../constants";
 import { Role } from "../../enums/role.enum";
-import { getBase64 } from "../../helpers/image.helper";
 import ImagesView from "../../components/ImagesView/ImagesView";
 import moment from "moment";
 
@@ -46,6 +46,7 @@ const Product = () => {
   const location = useLocation();
   const navigation = useNavigate();
   const dispatch = useAppDispatch();
+  const size = useAppWindowSize();
 
   const ownerFullname = useMemo(() => {
     return (
@@ -265,9 +266,9 @@ const Product = () => {
               <ImagesView images={productState.selectedProduct.images} />
             )}
         </div>
-        <div className="w-full mt-8 flex flex-row justify-between">
-          <div className="w-2/3">
-            <div>
+        <div className="w-full mt-8 flex flex-row justify-between flex-wrap">
+          <div className="w-full sm:w-2/3 pr-5">
+            <div className="relative">
               <div className="flex flex-row items-center space-x-2">
                 <h2 className="font-bold font-sans text-lg text-primary ">
                   {productState.selectedProduct.name}
@@ -284,6 +285,15 @@ const Product = () => {
                 )}{" "}
                 tarihinden itibaren satışta
               </span>
+              {size.width < 640 && (
+                <Button
+                  href="#order"
+                  type="link"
+                  className="!absolute right-0 bottom-1"
+                >
+                  Sipariş Ver
+                </Button>
+              )}
             </div>
             <div className=" border  h-[1px] my-4 " />
             <div className="flex flex-col space-y-5">
@@ -341,9 +351,161 @@ const Product = () => {
               <h4 className="font-semibold text-base font-sans">
                 Ürün Hakkında
               </h4>
+              <span>{productState.selectedProduct.description}</span>
+              <span>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure et
+                omnis, id ducimus quam, odio sint, ullam tenetur quasi libero
+                officiis blanditiis aperiam quae. Provident sapiente explicabo
+                totam eligendi recusandae. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Aspernatur, necessitatibus magnam
+                odit adipisci inventore laboriosam quae, enim qui ad unde
+                repellat aut iusto. Quo blanditiis cupiditate incidunt dicta
+                laborum nihil? Lorem ipsum dolor sit amet consectetur
+                adipisicing elit. Nesciunt doloribus explicabo at recusandae
+                maxime tenetur molestiae, sit autem quae dolores optio, quam
+                maiores officia omnis eos enim magni assumenda ullam. Lorem
+                ipsum dolor sit amet consectetur adipisicing elit. Esse deleniti
+                tenetur aspernatur eaque beatae repellendus itaque nam amet
+                error minus qui provident animi corporis, earum molestias
+                perferendis sequi ipsum ea. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Quo illo totam est quia nesciunt
+                tempore, inventore architecto possimus nulla pariatur animi
+                distinctio accusamus nostrum aliquid iure repellendus, beatae
+                dolore modi. Lorem ipsum dolor sit amet consectetur adipisicing
+                elit. Hic suscipit cumque aliquid? Explicabo a libero vitae et
+                tempora esse totam possimus ipsum, architecto, consectetur
+                aliquam, laboriosam nisi quidem labore fugit! Lorem ipsum, dolor
+                sit amet consectetur adipisicing elit. Cum voluptatem iure
+                pariatur sint, quidem placeat sed exercitationem molestias
+                harum, vel voluptate, id a delectus ducimus rem aut animi
+                maiores doloremque. Lorem, ipsum dolor sit amet consectetur
+                adipisicing elit. Enim illo quasi, laudantium, sunt cum eaque
+                nostrum commodi cupiditate nemo ducimus aperiam tempore,
+                quibusdam sit. Illo blanditiis cupiditate laborum aspernatur
+                minima! Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Provident maxime voluptatem atque, quam maiores commodi adipisci
+                dolore ipsum corrupti, quo doloribus cumque, corporis qui.
+                Molestias voluptas incidunt ex tenetur earum? Lorem, ipsum dolor
+                sit amet consectetur adipisicing elit. Magni odit soluta facere
+                in commodi pariatur voluptates, optio quasi neque tenetur beatae
+                doloremque fugiat quod sint animi ab incidunt cum sequi. Lorem
+                ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem,
+                provident consequuntur. Dicta veritatis quidem placeat.
+                Accusantium, perspiciatis sint quos tempore, a eos ab doloremque
+                itaque quis sapiente necessitatibus tenetur nemo. Lorem ipsum
+                dolor sit amet consectetur adipisicing elit. Et labore eligendi
+                ipsam maxime mollitia iure numquam minima, ab necessitatibus
+                earum aspernatur ex exercitationem similique tenetur animi atque
+                voluptas reprehenderit veritatis.
+              </span>
             </div>
           </div>
-          <div className="w-1/4 sticky">Card</div>
+          <div id="order" className="w-full sm:w-1/3 ">
+            <div className="w-full sticky top-3 p-4 border rounded-md shadow-md bg-white ">
+              <div className="flex flex-row items-center">
+                <h4 className="text-lg font-sans font-bold text-primary mb-0 pr-1">
+                  {productState.selectedProduct.price} ₺
+                </h4>
+                <span className="text-secondary font-semibold ">adet</span>
+              </div>
+              <div className="flex flex-row items-center justify-start h-8">
+                <div className="flex flex-row items-center">
+                  <img className="mr-1" src={icons.star} alt="star" />
+                  <span className="font-bold text-lg">
+                    {productState.selectedProduct.ratingPoint}
+                  </span>
+                </div>
+                <h2 className="mx-3">&#x2022;</h2>
+                <span className="text-secondary font-semibold pb-1">
+                  {productState.selectedProduct.ratingCount} değenlendirme
+                </span>
+              </div>
+              <InputNumber
+                disabled={userState.user.role !== roleEnum.Role.Customer}
+                className="!w-full !mt-2"
+                placeholder="Adet"
+                value={piece}
+                min={1}
+                max={productState.selectedProduct.stock}
+                onChange={handlePieceChange}
+              />
+              <Button
+                className="w-full mt-3 mb-2 !border-none !bg-green-600"
+                type="primary"
+                onClick={handleClick}
+                disabled={userState.user.role !== Role.Customer}
+              >
+                Sipariş Ver
+              </Button>
+              <span className="text-thirdy text-[.75rem]">
+                Satıcı onaylamadan ücret ödenmez.
+              </span>
+              <div className=" border  h-[1px] my-4 " />
+              <span className="text-lg font-semibold">Tutar : </span>
+              <span className="text-lg font-sans font-semibold">
+                {totalPrice} ₺
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="w-full mt-5 bg-red-700">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+          quia dolorum ea odit eligendi, esse libero, quisquam odio iusto aut
+          assumenda incidunt iure voluptatum perferendis minus voluptates. Ab at
+          voluptatibus nihil ex, suscipit omnis dolorum corrupti atque rem
+          nesciunt odio possimus praesentium facilis voluptatem doloribus odit
+          quod cumque quibusdam consequatur? Lorem ipsum dolor sit amet
+          consectetur adipisicing elit. Totam, tempore. Sapiente qui dicta unde
+          est ipsam minima eveniet quis. Sit modi commodi sequi nihil beatae
+          placeat ut quibusdam quisquam vero rem eveniet repudiandae atque
+          doloribus sapiente perspiciatis, iusto ex et nobis magni dolore
+          officia maxime eum exercitationem similique! Odit, dicta! Lorem ipsum
+          dolor sit amet consectetur adipisicing elit. Totam, tempore. Sapiente
+          qui dicta unde est ipsam minima eveniet quis. Sit modi commodi sequi
+          nihil beatae placeat ut quibusdam quisquam vero rem eveniet
+          repudiandae atque doloribus sapiente perspiciatis, iusto ex et nobis
+          magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
+          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
+          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
+          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
+          nobis magni dolore officia maxime eum exercitationem similique! Odit,
+          dicta!
         </div>
       </div>
     </div>
