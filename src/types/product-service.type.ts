@@ -1,4 +1,5 @@
 import { ProductStateType } from "../redux/types/product.type";
+import { UserType } from "../redux/types/user.types";
 
 export type QueryProductType = {
   name?: string;
@@ -50,6 +51,21 @@ export type BestSalesResponseType = {
   categoryIds: string[];
   sum: string;
   count: string;
+};
+
+export type CommentCreateType = {
+  productId: string;
+  comment: string;
+  ref?: string;
+};
+
+export type CommentType = {
+  id: string;
+  comment: string;
+  createdAt: Date;
+  productId: string;
+  ref?: string;
+  userId: Pick<UserType, "id" | "firstName" | "lastName" | "profilePicture">;
 };
 
 export type ProductKeysType = keyof ProductStateType;

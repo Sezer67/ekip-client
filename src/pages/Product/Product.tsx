@@ -32,6 +32,7 @@ import { Role } from "../../enums/role.enum";
 import ImagesView from "../../components/ImagesView/ImagesView";
 import moment from "moment";
 import RateProduct from "../../components/RateProduct/RateProduct";
+import MyComment from "../../components/Comment/MyComment";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
@@ -46,6 +47,7 @@ const Product = () => {
     (1 * productState.selectedProduct.price).toString()
   );
   const [isEveluateModal, setIsEveluateModal] = useState<boolean>(false);
+  const [commentsVisible, setCommentsVisible] = useState<boolean>(false);
 
   const location = useLocation();
   const navigation = useNavigate();
@@ -505,10 +507,21 @@ const Product = () => {
           </div>
         </div>
         {/* Yorum */}
+        <div className="w-full border h-[.1px]" />
         <div className="w-full mt-5">
           <div className="flex flex-row items-center">
-            <img alt="" src={icons.comment} />
-            <Button type="text">Yorumları Görüntüle</Button>
+            {commentsVisible ? (
+              <div className="w-full">
+                <MyComment />
+              </div>
+            ) : (
+              <>
+                <img alt="" src={icons.comment} />
+                <Button onClick={() => setCommentsVisible(true)} type="text">
+                  Yorumları Görüntüle
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

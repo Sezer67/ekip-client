@@ -33,7 +33,7 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
   if (order.isAnswer) {
     actionButtonText = "SİL";
     if (order.isAccept) {
-      bg = "bg-green-100";
+      bg = "bg-green-200";
       orderStatus = "Sipariş Onaylandı";
       const ctrl = userState.evaluateProducts.find(
         (el) => el.productId === order.productId.id
@@ -42,7 +42,7 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
         evaluate = !ctrl.isRating;
       }
     } else {
-      bg = "bg-red-100";
+      bg = "bg-red-200";
       orderStatus = "Sipariş Reddedildi";
     }
   }
@@ -109,7 +109,9 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
                 <span className="text-sm text-primary">{orderStatus}</span>
               </Tooltip>
               {orderStatus === "Sipariş Onaylandı" && evaluate && (
-                <button>Değerlendir</button>
+                <button onClick={() => setIsEveluateModal(true)}>
+                  Değerlendir
+                </button>
               )}
             </div>
           )}

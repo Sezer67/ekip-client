@@ -11,6 +11,8 @@ import {
 import { EvaluateResponseType, EvaluateType } from "../redux/types/user.types";
 import {
   BestSalesResponseType,
+  CommentCreateType,
+  CommentType,
   CreateOrderType,
   CreateProductType,
   SalesYearlyType,
@@ -125,4 +127,17 @@ export const setEveluateProductById = (
   dto: { rating: number }
 ): AxiosPromise<number> => {
   return axiosInstance.put(`${api_url}/product/rate/${id}`, dto);
+};
+
+// comment
+export const createComment = (
+  data: CommentCreateType
+): AxiosPromise<CommentType> => {
+  return axiosInstance.post(`${api_url}/comment`, data);
+};
+
+export const getCommentsByProductId = (
+  id: string
+): AxiosPromise<CommentType[]> => {
+  return axiosInstance.get(`${api_url}/comment/${id}`);
 };
