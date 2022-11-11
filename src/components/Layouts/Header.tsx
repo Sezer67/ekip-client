@@ -1,13 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Dropdown, Menu } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../service/user.sevice";
 import * as userSlice from "../../redux/userSlice/userSlice";
 import { useNavigate } from "react-router-dom";
-import { routeHelper, storageHelper } from "../../helpers";
+import { convertHelper, routeHelper, storageHelper } from "../../helpers";
 import { RoleTexts } from "./text";
 import { Path } from "../../enums/path.enum";
+import { setIsLoading } from "../../redux/userSlice/notificationSlice";
+import {
+  setBestSaleProducts,
+  setNewProducts,
+  setTrendProducts,
+} from "../../redux/productSlice/productSlice";
+import { productService } from "../../service";
 const Header = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -40,6 +47,44 @@ const Header = () => {
       ]}
     />
   );
+
+  useEffect(() => {
+    const getTrendProducts = async () => {
+      try {
+        const { data } = await productService.getTrendProducts();
+        dispatch(setTrendProducts(data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getNewProducts = async () => {
+      try {
+        const { data } = await productService.getNewProducts();
+        dispatch(setNewProducts(data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const bestSalesProducts = async () => {
+      try {
+        dispatch(setIsLoading({ isLoading: true }));
+        const { data } = await productService.getBestSalesProducts();
+        const convertedProducts =
+          convertHelper.convertBestSalesResponseToProducts(data);
+        dispatch(setBestSaleProducts(convertedProducts));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(setIsLoading({ isLoading: false }));
+      }
+    };
+    getNewProducts();
+    getTrendProducts();
+    bestSalesProducts();
+  }, []);
+
   return (
     <>
       <div className="w-full h-[7vh] bg-primary shadow-lg">

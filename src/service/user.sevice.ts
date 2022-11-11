@@ -3,6 +3,7 @@ import { axiosInstance } from "../axios.util";
 import { api_url } from "../configs/url.config";
 import {
   CreateFollowResponseType,
+  EvaluateType,
   FollowType,
   GetMyFollowedSellerResponseType,
   GetMyFollowersResponseType,

@@ -36,42 +36,42 @@ const DashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const position: PositionType[] = ["right"];
-  useEffect(() => {
-    const getTrendProducts = async () => {
-      try {
-        const { data } = await productService.getTrendProducts();
-        dispatch(setTrendProducts(data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // useEffect(() => {
+  //   const getTrendProducts = async () => {
+  //     try {
+  //       const { data } = await productService.getTrendProducts();
+  //       dispatch(setTrendProducts(data));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    const getNewProducts = async () => {
-      try {
-        const { data } = await productService.getNewProducts();
-        dispatch(setNewProducts(data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //   const getNewProducts = async () => {
+  //     try {
+  //       const { data } = await productService.getNewProducts();
+  //       dispatch(setNewProducts(data));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    const bestSalesProducts = async () => {
-      try {
-        dispatch(setIsLoading({ isLoading: true }));
-        const { data } = await productService.getBestSalesProducts();
-        const convertedProducts =
-          convertHelper.convertBestSalesResponseToProducts(data);
-        dispatch(setBestSaleProducts(convertedProducts));
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(setIsLoading({ isLoading: false }));
-      }
-    };
-    getNewProducts();
-    getTrendProducts();
-    bestSalesProducts();
-  }, []);
+  //   const bestSalesProducts = async () => {
+  //     try {
+  //       dispatch(setIsLoading({ isLoading: true }));
+  //       const { data } = await productService.getBestSalesProducts();
+  //       const convertedProducts =
+  //         convertHelper.convertBestSalesResponseToProducts(data);
+  //       dispatch(setBestSaleProducts(convertedProducts));
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       dispatch(setIsLoading({ isLoading: false }));
+  //     }
+  //   };
+  //   getNewProducts();
+  //   getTrendProducts();
+  //   bestSalesProducts();
+  // }, []);
 
   useEffect(() => {
     const url = routeHelper.addQueryToUrl("", {

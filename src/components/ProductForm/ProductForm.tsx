@@ -125,7 +125,9 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
           status: "success",
         })
       );
-      form.resetFields();
+      if (!isEdit) {
+        form.resetFields();
+      }
     } catch (error: any) {
       dispatch(
         setNotification({
@@ -258,10 +260,15 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
         {isEdit && (
           <>
             <Form.Item label="Tıklanma Sayısı">
-              <Input disabled value={selectedProduct.showCount} />
+              <Input
+                disabled
+                value={selectedProduct.showCount}
+                className="max-w-[500px]"
+              />
             </Form.Item>
             <Form.Item label="Satışa Sunulduğu Tarih">
               <Input
+                className="max-w-[500px]"
                 disabled
                 value={moment(selectedProduct.createdAt.toString()).format(
                   "DD/MM/YYYY HH:mm"

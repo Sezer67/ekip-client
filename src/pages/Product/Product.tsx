@@ -1,4 +1,4 @@
-import { Button, InputNumber, Tooltip } from "antd";
+import { Button, InputNumber, Modal, Tooltip } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { convertHelper, routeHelper } from "../../helpers";
@@ -8,7 +8,9 @@ import {
   useAppWindowSize,
 } from "../../redux/hooks";
 import {
+  addFavorite,
   addOrder,
+  removeFavorite,
   setProducts,
   setSelectedProduct,
 } from "../../redux/productSlice/productSlice";
@@ -29,6 +31,7 @@ import { gifs, icons } from "../../constants";
 import { Role } from "../../enums/role.enum";
 import ImagesView from "../../components/ImagesView/ImagesView";
 import moment from "moment";
+import RateProduct from "../../components/RateProduct/RateProduct";
 
 const Product = () => {
   const productState = useAppSelector((state) => state.product);
@@ -42,6 +45,7 @@ const Product = () => {
   const [totalPrice, setTotalPrice] = useState<string>(
     (1 * productState.selectedProduct.price).toString()
   );
+  const [isEveluateModal, setIsEveluateModal] = useState<boolean>(false);
 
   const location = useLocation();
   const navigation = useNavigate();
@@ -128,6 +132,17 @@ const Product = () => {
     setIsFollow(!!isFollowControl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userState.followers]);
+
+  useEffect(() => {
+    if (productState.selectedProduct && productState.selectedProduct.id) {
+      const ctrl = userState.evaluateProducts.find(
+        (el) => el.productId === productState.selectedProduct.id
+      );
+      if (ctrl && !ctrl.isRating) {
+        setIsEveluateModal(true);
+      }
+    }
+  }, [productState.selectedProduct, userState.evaluateProducts]);
 
   const handlePieceChange = (value: number) => {
     setPiece(value);
@@ -225,6 +240,22 @@ const Product = () => {
       );
     } catch (error) {}
   };
+  const handleFavorite = async () => {
+    try {
+      if (!isFavorite) {
+        const { data } = await productService.addProduuctToFavorites({
+          productId: productState.selectedProduct.id,
+        });
+        dispatch(addFavorite(data));
+        setIsFavorite(true);
+      } else {
+        await productService.removeProductToFavorites(
+          productState.selectedProduct.id
+        );
+        dispatch(removeFavorite({ id: productState.selectedProduct.id }));
+      }
+    } catch (error) {}
+  };
   if (loading)
     return (
       <div className="w-full h-full flex justify-center items-center">
@@ -235,19 +266,31 @@ const Product = () => {
   return (
     <div className="p-3 w-full min-h-[87vh] flex flex-col justify-start items-center">
       <div className="w-full max-w-[1200px]">
+        {/* Header */}
         <div className="w-full flex flex-col justify-start">
           <h2 className="font-bold font-sans text-xl">
             {productState.selectedProduct.name}
           </h2>
           <div className="w-full flex flex-row justify-between items-center">
-            <div>Değenlendirmer vs.</div>
+            <div className="flex flex-row items-center justify-start h-8">
+              <div className="flex flex-row items-center">
+                <img className="mr-1" src={icons.star} alt="star" />
+                <span className="font-bold text-lg">
+                  {productState.selectedProduct.ratingPoint}
+                </span>
+              </div>
+              <h2 className="mx-3">&#x2022;</h2>
+              <span className="text-secondary font-semibold pb-1">
+                {productState.selectedProduct.ratingCount} değenlendirme
+              </span>
+            </div>
             <div>
               {userState.user.role === Role.Customer && (
                 <Tooltip
                   title={isFavorite ? "Favoriden Kaldır" : "Favorilerime Ekle"}
                   placement="leftTop"
                 >
-                  <button className="text-red-500">
+                  <button onClick={handleFavorite} className="text-red-500">
                     <img
                       src={
                         isFavorite ? icons.fill_favorite : icons.empty_favorite
@@ -260,12 +303,14 @@ const Product = () => {
             </div>
           </div>
         </div>
+        {/* Images */}
         <div className="w-full my-4">
           {productState.selectedProduct.images &&
             productState.selectedProduct.images.length > 0 && (
               <ImagesView images={productState.selectedProduct.images} />
             )}
         </div>
+        {/* Description - card */}
         <div className="w-full mt-8 flex flex-row justify-between flex-wrap">
           <div className="w-full sm:w-2/3 pr-5">
             <div className="relative">
@@ -445,69 +490,42 @@ const Product = () => {
               <span className="text-lg font-sans font-semibold">
                 {totalPrice} ₺
               </span>
+              {isFollow ? (
+                <Tooltip title="Takibi Bırak">
+                  <Button block onClick={handleFollow} className="mt-3">
+                    Satıcı Takip Ediliyor
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Button block onClick={handleFollow} className="mt-3">
+                  Satıcıyı Takip et
+                </Button>
+              )}
             </div>
           </div>
         </div>
-        <div className="w-full mt-5 bg-red-700">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          quia dolorum ea odit eligendi, esse libero, quisquam odio iusto aut
-          assumenda incidunt iure voluptatum perferendis minus voluptates. Ab at
-          voluptatibus nihil ex, suscipit omnis dolorum corrupti atque rem
-          nesciunt odio possimus praesentium facilis voluptatem doloribus odit
-          quod cumque quibusdam consequatur? Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Totam, tempore. Sapiente qui dicta unde
-          est ipsam minima eveniet quis. Sit modi commodi sequi nihil beatae
-          placeat ut quibusdam quisquam vero rem eveniet repudiandae atque
-          doloribus sapiente perspiciatis, iusto ex et nobis magni dolore
-          officia maxime eum exercitationem similique! Odit, dicta! Lorem ipsum
-          dolor sit amet consectetur adipisicing elit. Totam, tempore. Sapiente
-          qui dicta unde est ipsam minima eveniet quis. Sit modi commodi sequi
-          nihil beatae placeat ut quibusdam quisquam vero rem eveniet
-          repudiandae atque doloribus sapiente perspiciatis, iusto ex et nobis
-          magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam,
-          tempore. Sapiente qui dicta unde est ipsam minima eveniet quis. Sit
-          modi commodi sequi nihil beatae placeat ut quibusdam quisquam vero rem
-          eveniet repudiandae atque doloribus sapiente perspiciatis, iusto ex et
-          nobis magni dolore officia maxime eum exercitationem similique! Odit,
-          dicta!
+        {/* Yorum */}
+        <div className="w-full mt-5">
+          <div className="flex flex-row items-center">
+            <img alt="" src={icons.comment} />
+            <Button type="text">Yorumları Görüntüle</Button>
+          </div>
         </div>
       </div>
+      <Modal
+        visible={isEveluateModal}
+        onCancel={() => setIsEveluateModal(false)}
+        footer={null}
+        bodyStyle={{
+          padding: 0,
+        }}
+        closable={false}
+      >
+        <RateProduct
+          productId={productState.selectedProduct.id}
+          setVisible={setIsEveluateModal}
+        />
+      </Modal>
     </div>
   );
 };

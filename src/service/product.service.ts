@@ -8,6 +8,7 @@ import {
   ProductStateType,
   SalesResultType,
 } from "../redux/types/product.type";
+import { EvaluateResponseType, EvaluateType } from "../redux/types/user.types";
 import {
   BestSalesResponseType,
   CreateOrderType,
@@ -110,4 +111,18 @@ export const getFavorites = (): AxiosPromise<FavoriteStateType[]> => {
 
 export const removeProductToFavorites = (id: string): AxiosPromise<string> => {
   return axiosInstance.delete(`${api_url}/favorite/${id}`);
+};
+
+// satıcının satın aldığı ürünler (değenlendirme modal i kontrolü için)
+export const getEvaluatedProductsByUser = (): AxiosPromise<
+  EvaluateResponseType[]
+> => {
+  return axiosInstance.get(`${api_url}/product/rate/isRating`);
+};
+
+export const setEveluateProductById = (
+  id: string,
+  dto: { rating: number }
+): AxiosPromise<number> => {
+  return axiosInstance.put(`${api_url}/product/rate/${id}`, dto);
 };

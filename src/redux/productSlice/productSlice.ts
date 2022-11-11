@@ -110,6 +110,22 @@ const productSlice = createSlice({
     setBestSaleProducts: (state, action: PayloadAction<BestSalesType[]>) => {
       state.globalDatas.bestSales = action.payload;
     },
+    setProductRating: (
+      state,
+      action: PayloadAction<{ id: string; rating: number }>
+    ) => {
+      state.products = state.products.map((product) => {
+        if (product.id === action.payload.id) {
+          product.ratingCount += 1;
+          product.ratingPoint = action.payload.rating;
+        }
+        return product;
+      });
+      if (state.selectedProduct) {
+        state.selectedProduct.ratingCount += 1;
+        state.selectedProduct.ratingPoint = action.payload.rating;
+      }
+    },
   },
 });
 
@@ -128,4 +144,5 @@ export const {
   setNewProducts,
   setTrendProducts,
   setBestSaleProducts,
+  setProductRating,
 } = productSlice.actions;

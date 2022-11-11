@@ -5,6 +5,8 @@ import {
 } from "../redux/types/product.type";
 import {
   CreateFollowResponseType,
+  EvaluateResponseType,
+  EvaluateType,
   FollowType,
 } from "../redux/types/user.types";
 import { BestSalesResponseType } from "../types/product-service.type";
@@ -104,4 +106,20 @@ export const convertBestSalesResponseToProducts = (
   });
 
   return products;
+};
+
+export const convertEvaluateProductToReduxType = (
+  data: EvaluateResponseType[]
+): EvaluateType[] => {
+  const result: EvaluateType[] = [];
+
+  data.forEach((el) => {
+    const value = {
+      userId: el.userId.id,
+      productId: el.productId.id,
+      isRating: el.isRating,
+    };
+    result.push(value);
+  });
+  return result;
 };

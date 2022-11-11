@@ -1,18 +1,27 @@
-import { Button, Tooltip } from "antd";
+import { Button, Modal, Tooltip } from "antd";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import { imageHelper } from "../../helpers";
-import { useAppDispatch, useAppWindowSize } from "../../redux/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useAppWindowSize,
+} from "../../redux/hooks";
 import { deleteOrder } from "../../redux/productSlice/productSlice";
 import { OrderStateType } from "../../redux/types/product.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { productService } from "../../service";
+import RateProduct from "../RateProduct/RateProduct";
 
 type PropsType = {
   order: OrderStateType;
 };
 
 const OrderCard: React.FC<PropsType> = ({ order }) => {
+  const [isEveluateModal, setIsEveluateModal] = useState<boolean>(false);
+
+  const userState = useAppSelector((state) => state.user);
+
   const dispatch = useAppDispatch();
 
   const size = useAppWindowSize();
@@ -20,11 +29,18 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
   let bg = "bg-slate-50";
   let orderStatus = "Satıcıdan Onay Bekleniyor";
   let actionButtonText = "İPTAL ET";
+  let evaluate: boolean = false;
   if (order.isAnswer) {
     actionButtonText = "SİL";
     if (order.isAccept) {
       bg = "bg-green-100";
       orderStatus = "Sipariş Onaylandı";
+      const ctrl = userState.evaluateProducts.find(
+        (el) => el.productId === order.productId.id
+      );
+      if (ctrl) {
+        evaluate = !ctrl.isRating;
+      }
     } else {
       bg = "bg-red-100";
       orderStatus = "Sipariş Reddedildi";
@@ -87,10 +103,15 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
         </div>
 
         <div className="flex flex-row items-center space-x-6">
-          {size.width > 500 && (
-            <Tooltip title="Sipariş Durumu">
-              <span className="text-sm text-primary">{orderStatus}</span>
-            </Tooltip>
+          {size.width > 450 && (
+            <div>
+              <Tooltip title="Sipariş Durumu">
+                <span className="text-sm text-primary">{orderStatus}</span>
+              </Tooltip>
+              {orderStatus === "Sipariş Onaylandı" && evaluate && (
+                <button>Değerlendir</button>
+              )}
+            </div>
           )}
           <div className="flex flex-col space-y-2">
             <Tooltip placement="right" title="Sipariş Tarihi">
@@ -115,6 +136,20 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
           </div>
         </div>
       </div>
+      <Modal
+        visible={isEveluateModal}
+        onCancel={() => setIsEveluateModal(false)}
+        footer={null}
+        bodyStyle={{
+          padding: 0,
+        }}
+        closable={false}
+      >
+        <RateProduct
+          productId={order.productId.id}
+          setVisible={setIsEveluateModal}
+        />
+      </Modal>
     </div>
   );
 };

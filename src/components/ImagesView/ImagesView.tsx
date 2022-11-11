@@ -15,7 +15,7 @@ const ImagesView: React.FC<PropsType> = ({ images }) => {
     return (
       <div className="w-full">
         <img
-          className="w-full object-cover rounded-md"
+          className=" object-contain rounded-md"
           src={imageHelper.getBase64(images[0])}
           alt=""
         />

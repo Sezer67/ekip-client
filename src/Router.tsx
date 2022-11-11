@@ -5,10 +5,14 @@ import { setApiToken } from "./axios.util";
 import Layout from "./components/Layouts/Layout";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { Role } from "./enums/role.enum";
-import { storageHelper } from "./helpers";
+import { convertHelper, storageHelper } from "./helpers";
 import { setCategory } from "./redux/categorySlice/categorySlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { setFollowers, setUser } from "./redux/userSlice/userSlice";
+import {
+  setEvaluateProducts,
+  setFollowers,
+  setUser,
+} from "./redux/userSlice/userSlice";
 import { categoryService, productService, userService } from "./service";
 import { getLoggedUser } from "./service/user.sevice";
 import notfound from "./assets/images/notfound.svg";
@@ -115,6 +119,16 @@ function App() {
       } catch (error) {}
     };
 
+    const getEvaluateProducts = async () => {
+      try {
+        const { data } = await productService.getEvaluatedProductsByUser();
+        const converted = convertHelper.convertEvaluateProductToReduxType(data);
+        dispatch(setEvaluateProducts(converted));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (userState.user.token) {
       setIsAuth(true);
     } else getUser();
@@ -128,7 +142,14 @@ function App() {
     ) {
       getFavorites();
     }
-    if (userState.followers.length < 1) {
+    if (
+      userState.user.role === Role.Customer &&
+      userState.evaluateProducts &&
+      userState.evaluateProducts.length < 1
+    ) {
+      getEvaluateProducts();
+    }
+    if (userState.user.role !== Role.Admin && userState.followers.length < 1) {
       getFollowers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -27,6 +27,7 @@ export type UpdateProductType = {
   showCount?: number;
   stock?: number;
   images?: string[] | null;
+  description?: string;
   categories?: string[];
 };
 

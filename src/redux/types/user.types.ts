@@ -4,6 +4,7 @@ export type UserStateType = {
   user: UserType;
   allUsers: UserType[];
   followers: FollowType[];
+  evaluateProducts: EvaluateType[];
 };
 
 export type UserType = {
@@ -41,4 +42,19 @@ export type GetMyFollowedSellerResponseType = {
 export type GetMyFollowersResponseType = {
   id: string;
   followerId: FollowType;
+};
+
+export type EvaluateType = {
+  userId: string;
+  productId: string;
+  isRating: boolean;
+};
+export type EvaluateResponseType = {
+  userId: {
+    id: string;
+  };
+  productId: {
+    id: string;
+  };
+  isRating: boolean;
 };

@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Role } from "../../enums/role.enum";
 import { ResponseLoginType } from "../../types/user-service.types";
-import { FollowType, UserStateType, UserType } from "../types/user.types";
+import {
+  EvaluateType,
+  FollowType,
+  UserStateType,
+  UserType,
+} from "../types/user.types";
 
 const initialState: UserStateType = {
   user: {
@@ -18,6 +23,7 @@ const initialState: UserStateType = {
   },
   followers: [],
   allUsers: [],
+  evaluateProducts: [],
 };
 
 const userSlice = createSlice({
@@ -54,6 +60,7 @@ const userSlice = createSlice({
       };
       state.allUsers = [];
       state.followers = [];
+      state.evaluateProducts = [];
     },
     setFollowers: (state, action: PayloadAction<FollowType[]>) => {
       state.followers = action.payload;
@@ -80,6 +87,20 @@ const userSlice = createSlice({
         return user;
       });
     },
+    setEvaluateProducts: (state, action: PayloadAction<EvaluateType[]>) => {
+      state.evaluateProducts = action.payload;
+    },
+    setEvaluateProductByProductId: (
+      state,
+      action: PayloadAction<{ id: string }>
+    ) => {
+      state.evaluateProducts = state.evaluateProducts.map((el) => {
+        if (el.productId === action.payload.id) {
+          el.isRating = true;
+        }
+        return el;
+      });
+    },
   },
 });
 
@@ -94,4 +115,6 @@ export const {
   removeFollower,
   setAllUsers,
   updateUserById,
+  setEvaluateProducts,
+  setEvaluateProductByProductId,
 } = userSlice.actions;

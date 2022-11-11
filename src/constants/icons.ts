@@ -29,7 +29,9 @@ import trend from "../assets/icons/trend.png";
 import best_seller from "../assets/icons/best-seller.png";
 import _new from "../assets/icons/new.png";
 import star from "../assets/icons/star.png";
+import comment from "../assets/icons/comment.png";
 export {
+  comment,
   star,
   trend,
   best_seller,

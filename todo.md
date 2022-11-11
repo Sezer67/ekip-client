@@ -45,14 +45,27 @@ yorumların üzerinde satın alan kullanıcılardan yazsın (eğer öyleyse)
 backend => product comments table
 product table => description, degerlendirme sayısı , degerlendirme puanı
 
-ürün update description eklenecek seller tarafında
+ürün update description eklenecek seller tarafında **Done**
+
 customer tarafında ise rating ler ekleencek
+prdouct table içerisinde satın alanlar array i (user-id) tutulsun.
+satın alan müşteri giriş yapılı ise o rating verebilir.
+
+yorumların başında da satın alan kişilerdendir. yazması için comment deki userid ile kontrol edilecek. Yorumlar müşteri onclick yaptığında getirilecek.
+Frontend yorumları görüntüle func. yazılacak.
+Backend table create
+id,userId,productId,comment,date,ref (null | comment.id)
+
+değerlendirmeler tablosu **Done**
+id, productid, userid , isRating (bool);**Done**
+product sayfasına girdiğinde o ürün ve kullanıcı çekilecek. (comment)
+eğer değerlendirme yapmadıysa değerlendirme modal i açılacak. **Done**
 
 BUGS
 hesap log out işleminde followers state i sıfırlanacak. **fixed**
 seller hesabı my products page de product card click düzenlenecek. **fixed**
 öneri şikayet sayfasında admin yanıtı yerine kullanıcı description gösteriliyor. **fixed**
-hesap isFreeze ise login olamayacak. Uyarı yesin.**need test**
-user update den role kaldırılacak.
-ProductCard min h ayarlarsın
-product page de refresh yiyince best statistic gidiyor app de istek yolla
+hesap isFreeze ise login olamayacak. Uyarı yesin.**need test** **closed now**
+user update den role kaldırılacak.**fixed**
+ProductCard min h ayarlarsın **fixed**
+product page de refresh yiyince best statistic gidiyor app de istek yolla **Fixed**
