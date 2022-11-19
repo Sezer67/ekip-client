@@ -1,6 +1,7 @@
 import { Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { api_url } from "../../configs/url.config";
 import { gifs, icons } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { MessageType } from "../../redux/types/chat.type";
@@ -15,7 +16,7 @@ const Chat: React.FC<PropsType> = ({
   messages,
   setMessages,
 }) => {
-  const socket = io("http://192.168.1.34:8000");
+  const socket = io(api_url);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [messageEnd, setMessageEnd] = useState<HTMLDivElement | null>(null);

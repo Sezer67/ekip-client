@@ -7,29 +7,8 @@ import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { productService } from "../../service";
 import { CommentType } from "../../types/product-service.type";
 
-interface EditorProps {
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onSubmit: () => void;
-  submitting: boolean;
-  value?: string;
-}
-
 const MyComment = () => {
-  const [comments, setComments] = useState<CommentType[]>([
-    {
-      comment:
-        "jkhsadbkjsa askjhbdkashjd asljdnajsd asljhdbnsajd lashjbdnjaslkd ashjbdnasjnd asljdblasjknd asldjhbasldhj ldhbafhh fsuılfhoıus fhmosuıfho ıufnh osıufn nhsunıf hnsfnnh sındf hsd fuhdsmuy fmhsdfu ygdsh yfgdsfdshb hbs dhjbf mfbdh msdg vfg dvfnds fvsfyv sbyefvs fgehb",
-      createdAt: new Date(),
-      id: "ahsgdkhjald",
-      productId: "askjhdbnsd",
-      userId: {
-        id: "asdşksad",
-        firstName: "Sezer",
-        lastName: "Kenar",
-        profilePicture: null,
-      },
-    },
-  ]);
+  const [comments, setComments] = useState<CommentType[]>([]);
   const [refComments, setRefComments] = useState<CommentType[]>([]);
   const [newComment, setNewComment] = useState<string>("");
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -115,9 +94,11 @@ const MyComment = () => {
       });
       if (data.ref) {
         setRefComments([data, ...refComments]);
+        setIsRef(null);
       } else {
         setComments([data, ...comments]);
       }
+      setNewComment("");
     } catch (error) {
       dispatch(
         setNotification({
@@ -146,20 +127,24 @@ const MyComment = () => {
           {comments.map((comment) => {
             if (comment.ref) return <></>;
             let isUserBuy = userState.evaluateProducts.find(
-              (el) => el.userId === comment.userId.id
+              (el) => el.userId === comment.userId.id && productState.selectedProduct.id === el.productId
             );
-            const name = comment.userId.firstName.concat(
+            const name = userState.user.id === comment.userId.id ? "Siz" : comment.userId.firstName.concat(
               " ",
               comment.userId.lastName
             );
             return (
+              <>
+                
               <Comment
+                key={comment.id}
+                // isRef Tüm commentlerin tutulduğu componentin state i o yüzden or sorgusu konuldu.
                 actions={[
                   <>
-                    {isRef === null ? (
+                    {isRef === null || (isRef !== null && isRef.ref !== comment.id) ? (
                       <span
                         onClick={() =>
-                          setIsRef({ ref: comment.productId, user: name })
+                          setIsRef({ ref: comment.id, user: name })
                         }
                       >
                         Yanıtla
@@ -169,9 +154,9 @@ const MyComment = () => {
                     )}
                   </>,
                 ]}
-                datetime={moment(comment.createdAt).format("DD/MM/YYYY HH:mm")}
+                datetime={moment(comment.createdAt).format("DD/MM/YYYY | HH:mm")}
                 author={
-                  <span className="!text-primary !text-base ">
+                  <span className="!text-secondary !text-base font-semibold">
                     {name}
                     {"\t"}
                     {isUserBuy && (
@@ -185,30 +170,37 @@ const MyComment = () => {
                   comment.userId.profilePicture,
                   comment.userId.firstName.charAt(0).toUpperCase()
                 )}
-                content={<span>{comment.comment}</span>}
+                content={<span className="pl-2 text-black text-base">{comment.comment}</span>}
               >
                 {refComments.map((c) => {
-                  if (c.ref === comment.productId) {
+                  if (c.ref === comment.id) {
+                    const refUsername = userState.user.id === comment.userId.id ? "Siz" : comment.userId.firstName.concat(
+                      " ",
+                      comment.userId.lastName
+                    );
                     return (
                       <Comment
                         author={
-                          <span className="!text-primary !text-base">
-                            {c.userId.firstName.concat(" ", c.userId.lastName)}
+                          <span className="!text-primary !text-base font-semibold">
+                            {refUsername}
                             {"\t"}
                             {isUserBuy && "Satın Alanlardan"}
                           </span>
                         }
+                        datetime={moment(comment.createdAt).format("DD/MM/YYYY | HH:mm")}
                         avatar={pic(
                           c.userId.profilePicture,
                           c.userId.firstName.charAt(0).toUpperCase()
                         )}
-                        content={<span>{c.comment}</span>}
+                        content={<span className="pl-2 text-black text-base">{c.comment}</span>}
                       />
                     );
                   }
                   return <></>;
                 })}
               </Comment>
+              <div className="border-b" />
+              </>
             );
           })}
         </>

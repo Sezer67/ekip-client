@@ -98,6 +98,12 @@ export const convertBestSalesResponseToProducts = (
         case "show_count":
           product.showCount = data[value];
           break;
+        case "rating_count":
+          product.ratingCount = data[value];
+          break;
+        case "rating_point":
+          product.ratingPoint = data[value];
+          break;
         default:
           break;
       }

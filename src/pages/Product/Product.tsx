@@ -55,6 +55,7 @@ const Product = () => {
   const size = useAppWindowSize();
 
   const ownerFullname = useMemo(() => {
+    if(!productState.selectedProduct.ownerId) return;
     return (
       productState.selectedProduct.ownerId.firstName +
       " " +
@@ -104,7 +105,7 @@ const Product = () => {
       getProdutcsByCategories(categories);
     }
 
-    if (!productState.selectedProduct.id) {
+    if (!productState.selectedProduct.id || !productState.selectedProduct.ownerId) {
       const productId = location.pathname.split("product/")[1];
       getProductById(productId);
     }
@@ -203,7 +204,7 @@ const Product = () => {
       dispatch(
         setNotification({
           message: "Siparişiniz Alınamadı",
-          description: error.response.data.message,
+          description: error.response.data.description,
           isNotification: true,
           placement: "top",
           status: "error",
@@ -328,7 +329,7 @@ const Product = () => {
               </div>
               <span className="text-thirdy">
                 {moment(productState.selectedProduct.createdAt).format(
-                  "DD/MM/YYY"
+                  "DD/MM/YYYY"
                 )}{" "}
                 tarihinden itibaren satışta
               </span>
@@ -485,7 +486,7 @@ const Product = () => {
                 Sipariş Ver
               </Button>
               <span className="text-thirdy text-[.75rem]">
-                Satıcı onaylamadan ücret ödenmez.
+                Satıcı onaylayana kadar ücretiniz bizde durur. Sipariş iptali/onaylanmama durumunda iade edilir.
               </span>
               <div className=" border  h-[1px] my-4 " />
               <span className="text-lg font-semibold">Tutar : </span>

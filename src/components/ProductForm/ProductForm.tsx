@@ -16,10 +16,11 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { icons } from "../../constants";
 import { imageHelper } from "../../helpers";
+import { addCategory } from "../../redux/categorySlice/categorySlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setSelectedProduct } from "../../redux/productSlice/productSlice";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
-import { productService } from "../../service";
+import { categoryService, productService } from "../../service";
 import {
   CreateProductType,
   UpdateProductType,
@@ -38,6 +39,8 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
     visible: boolean;
   }>({ url: "", visible: false });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [newCategoryVisible, setNewCategoryVisible] = useState<boolean>(false);
+  const [newCategory, setNewCategory] = useState<string>("");
   const [form] = Form.useForm();
 
   const selectedProduct = useAppSelector(
@@ -140,6 +143,34 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleNewCategory = async () => {
+    if (newCategoryVisible) {
+      if (newCategory.trim().length < 1) return;
+      try {
+        // new category added db
+        const { data } = await categoryService.addCategory({
+          name: newCategory.trim(),
+        });
+        // added state
+        dispatch(addCategory(data));
+        // close input
+        setNewCategoryVisible(false);
+      } catch (error: any) {
+        dispatch(
+          setNotification({
+            isNotification: true,
+            message: "İşlem Başarısız",
+            description: "",
+            placement: "top",
+            status: "error",
+          })
+        );
+      }
+    } else {
+      setNewCategoryVisible(true);
     }
   };
 
@@ -257,6 +288,19 @@ const ProductForm: React.FC<PropType> = ({ isEdit }) => {
             ))}
           </Select>
         </Form.Item>
+        <div className="max-w-[500px] mb-4 flex flex-row items-center space-x-4">
+          {newCategoryVisible && (
+            <Input
+              className="max-w-[500px]"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+            />
+          )}
+
+          <Button className="m-0" onClick={handleNewCategory}>
+            {newCategoryVisible ? "" : "Yeni "}Oluştur
+          </Button>
+        </div>
         {isEdit && (
           <>
             <Form.Item label="Tıklanma Sayısı">

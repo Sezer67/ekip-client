@@ -61,6 +61,8 @@ id, productid, userid , isRating (bool);**Done**
 product sayfasına girdiğinde o ürün ve kullanıcı çekilecek. (comment)
 eğer değerlendirme yapmadıysa değerlendirme modal i açılacak. **Done**
 
+seller tarafında kategori create etmek eklenecek. **Done**
+
 BUGS
 hesap log out işleminde followers state i sıfırlanacak. **fixed**
 seller hesabı my products page de product card click düzenlenecek. **fixed**
@@ -69,3 +71,15 @@ hesap isFreeze ise login olamayacak. Uyarı yesin.**need test** **closed now**
 user update den role kaldırılacak.**fixed**
 ProductCard min h ayarlarsın **fixed**
 product page de refresh yiyince best statistic gidiyor app de istek yolla **Fixed**
+
+TODOS 18 NOVEMBER
+kayıt olurken role seçme
+seller / staışlarım sayfasında yıllık satış empty yüklenecek.
+isFreeze olan hesap login olamayacak. Bir modal ile engellendiği mesajı verilecek.
+ProductCard yeniden yapılacak. **Done**
+Yorum ve iç içe yorum test edilecek.
+Nginx kurulumu.
+çok satanlar içerisinde gelen rating yakalanacak. **Done**
+
+BUG
+kullanıcı satın almadığı halde satın alanlardan yazısı çıkıyor.

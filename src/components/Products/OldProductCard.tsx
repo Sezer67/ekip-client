@@ -1,4 +1,3 @@
-import { Button, Rate } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { icons } from "../../constants";
@@ -20,7 +19,7 @@ type PropsType = {
   editable?: boolean;
 };
 
-const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
+const OldProductCard: React.FC<PropsType> = ({ product, editable }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   const userState = useAppSelector((state) => state.user);
@@ -77,10 +76,10 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
   }, [product, productState.favorites, userState]);
 
   return (
-    <div className="relative min-w-[17rem]  w-80 shadow-md bg-white p-3 m-3 rounded-md  flex flex-col cursor-pointer hover:shadow-xl transition-shadow duration-300">
+    <div className="relative min-w-[12rem] w-56 max-h-60 shadow-md bg-white p-3 m-3 rounded-md  flex flex-col justify-around cursor-pointer hover:shadow-xl transition-shadow duration-300">
       <div
         onClick={editable ? handleEdit : handleFavorite}
-        className={`absolute top-1 right-1 w-8 h-8 bg-white rounded-full flex justify-center items-center ${
+        className={`absolute shadow-md -top-3 -right-3 w-10 h-10 rounded-full bg-white flex justify-center items-center ${
           !editable && userState.user.role !== roleEnum.Role.Customer
             ? "hidden"
             : ""
@@ -94,16 +93,15 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
               ? icons.fill_favorite
               : icons.empty_favorite
           }
-          className="w-4 h-4"
           alt="fav"
         />
       </div>
-      <div className="flex justify-center mb-1 w-full border-b">
+      <div className="flex justify-center mb-6 w-full">
         {imgsrc ? (
           <img
             src={imgsrc}
             alt="asd"
-            className="w-full object-contain max-h-[100px] "
+            className="max-w-[200px] max-h-[100px] hover:scale-125 hover:shadow-md hover:rounded-md mt-1 transition-all duration-300"
           />
         ) : (
           <span className="text-red-700 italic ">
@@ -115,29 +113,19 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
         <span className="text-orange font-semibold text-lg  cursor-pointer">
           {product.name}
         </span>
-        {product.ownerId ? (<span className="text-thirdy text-[.65rem] italic mb-2">{product.ownerId?.firstName.concat(" ",product.ownerId?.lastName)} tarafından</span>
-        ) : null}
         <div className="flex flex-row flex-wrap items-center justify-between">
           <span className="text-secondary font-semibold text-lg">
             {product.price} ₺
           </span>
-          {product.stock < 50 && (
+          {product.stock < 20 && (
             <span className="text-thirdy text-xs">
               Kalan Stok: {product.stock}
             </span>
           )}
-        </div>
-        <div className="flex flex-row items-center justify-between flex-wrap">
-          <div className="flex flex-row items-center">
-            
-        <Rate allowHalf disabled defaultValue={product.ratingPoint} />
-        <span className="pt-1 ml-2 text-thirdy">({product.ratingCount})</span>
-          </div>
-          <Button onClick={handleShow} className="hover:!bg-blue-400 hover:!text-light">Görüntüle</Button>
         </div>
       </div>
     </div>
   );
 };
 
-export default ProductCard;
+export default OldProductCard;

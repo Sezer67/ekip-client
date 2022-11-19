@@ -23,15 +23,15 @@ const ImagesView: React.FC<PropsType> = ({ images }) => {
     );
   } else if (images.length >= 2) {
     return (
-      <div className="w-full flex flex-row flex-wrap">
+      <div className="w-full flex flex-row flex-wrap justify-center">
         <img
-          className="w-1/2 pr-1 object-cover rounded-l-md cursor-pointer"
+          className="max-w-1/2 pr-1 object-contain rounded-l-md cursor-pointer"
           src={imageHelper.getBase64(images[0])}
           alt=""
           onClick={() => setVisible(true)}
         />
         <img
-          className="w-1/2 pl-1 object-cover rounded-r-md cursor-pointer"
+          className="max-w-1/2 pl-1 object-contain rounded-r-md cursor-pointer"
           src={imageHelper.getBase64(images[1])}
           alt=""
           onClick={() => setVisible(true)}

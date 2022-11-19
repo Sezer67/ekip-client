@@ -10,6 +10,7 @@ import {
 import { deleteOrder } from "../../redux/productSlice/productSlice";
 import { OrderStateType } from "../../redux/types/product.type";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
+import { setUserPlusBalance } from "../../redux/userSlice/userSlice";
 import { productService } from "../../service";
 import RateProduct from "../RateProduct/RateProduct";
 
@@ -51,6 +52,9 @@ const OrderCard: React.FC<PropsType> = ({ order }) => {
     try {
       const { data } = await productService.deleteOrder(order.id);
       dispatch(deleteOrder(data));
+      if(!order.isAnswer){
+        dispatch(setUserPlusBalance({balance:order.totalPrice}))
+      }
       dispatch(
         setNotification({
           message: "İşlem Başarılı",

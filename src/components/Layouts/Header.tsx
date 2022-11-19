@@ -12,6 +12,7 @@ import { setIsLoading } from "../../redux/userSlice/notificationSlice";
 import {
   setBestSaleProducts,
   setNewProducts,
+  setSelectedProduct,
   setTrendProducts,
 } from "../../redux/productSlice/productSlice";
 import { productService } from "../../service";
@@ -24,6 +25,7 @@ const Header = () => {
     try {
       await logout();
       dispatch(userSlice.logout(""));
+      
       storageHelper.setKeyWithValue("token", "");
       routeHelper.navigation(navigate, Path.LOGIN);
     } catch (error) {

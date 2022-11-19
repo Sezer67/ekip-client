@@ -48,6 +48,8 @@ export type BestSalesResponseType = {
   name: string;
   created_at: Date;
   show_count: number;
+  rating_count:number;
+  rating_point:number;
   categoryIds: string[];
   sum: string;
   count: string;
