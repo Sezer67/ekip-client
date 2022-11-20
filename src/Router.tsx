@@ -15,15 +15,14 @@ import {
 } from "./redux/userSlice/userSlice";
 import { categoryService, productService, userService } from "./service";
 import { getLoggedUser } from "./service/user.sevice";
-import notfound from "./assets/images/notfound.svg";
 import { Path } from "./enums/path.enum";
 import { setFavorites } from "./redux/productSlice/productSlice";
 import { FollowType } from "./redux/types/user.types";
 import {
-  setIsLoading,
   setNotification,
 } from "./redux/userSlice/notificationSlice";
 import { gifs } from "./constants";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
 const LoginPage = React.lazy(() => import("./pages/LoginPage/LoginPage"));
 const RegisterPage = React.lazy(
@@ -259,9 +258,7 @@ function App() {
           <Route
             path={Path.NOT_FOUND}
             element={
-              <div>
-                <img src={notfound} alt="not found" />
-              </div>
+              <NotFoundPage />
             }
           />
         </Routes>

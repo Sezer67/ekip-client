@@ -37,7 +37,6 @@ const LoginPage = () => {
         setApiToken(data.token);
         storageHelper.setKeyWithValue("token", data.token);
       }
-      debugger;
       if (data.role === Role.Admin) {
         routeHelper.navigation(navigate, pathEnum.Path.USERS);
       } else {
@@ -45,18 +44,17 @@ const LoginPage = () => {
       }
       dispatch(
         setNotification({
-          message: "Heyy !",
-          description: "Hoşgeldin :)",
+          message: "Hoşgeldiniz",
+          description: "",
           isNotification: true,
           placement: "top",
           status: "success",
         })
       );
     } catch (error: any) {
-      debugger;
       dispatch(
         setNotification({
-          message: "Opppsss",
+          message: "Dur bakalım !",
           description: error.response?.data.description,
           isNotification: true,
           placement: "top",

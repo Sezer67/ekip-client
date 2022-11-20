@@ -1,9 +1,11 @@
+import { roleEnum } from "../../enums";
+
 export type FormValuesType = {
     firstName:string;
     lastName:string;
     username:string;
     email:string;
-    gender:GenderType;
+    role:roleEnum.Role;
     password:string;
 }
 
@@ -12,7 +14,7 @@ export enum FormValuesEnum {
     lastName = "lastName",
     username = "username",
     email = "email",
-    gender = "gender",
+    role = "role",
     password = "password",
 }
 
@@ -22,5 +24,3 @@ export const errorMessages = {
         email:`This is not a valid email!`
     }
 }
-
-type GenderType = "Male" | "Female";

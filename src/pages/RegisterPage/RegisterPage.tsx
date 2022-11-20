@@ -3,6 +3,7 @@ import FormItem from "antd/es/form/FormItem";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../enums/path.enum";
+import { Role, RoleText } from "../../enums/role.enum";
 import { useAppDispatch } from "../../redux/hooks";
 import { setNotification } from "../../redux/userSlice/notificationSlice";
 import { register } from "../../service/user.sevice";
@@ -94,6 +95,17 @@ const RegisterPage: React.FC = () => {
               ]}
             >
               <Input size="middle" />
+            </Form.Item>
+            <Form.Item label="Hesap Türü" name={FormValuesEnum.role} initialValue={Role.Customer} rules={[
+                {
+                  required: true,
+                  message: errorMessages.required("Hesap Türü"),
+                },
+              ]}>
+              <Radio.Group optionType="button" buttonStyle="solid">
+                <Radio.Button value={Role.Customer}>{RoleText.customer}</Radio.Button>
+                <Radio.Button value={Role.Seller}>{RoleText.seller}</Radio.Button>
+              </Radio.Group>
             </Form.Item>
             <Form.Item
               label="Şifre"

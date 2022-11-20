@@ -73,13 +73,17 @@ ProductCard min h ayarlarsın **fixed**
 product page de refresh yiyince best statistic gidiyor app de istek yolla **Fixed**
 
 TODOS 18 NOVEMBER
-kayıt olurken role seçme
-seller / staışlarım sayfasında yıllık satış empty yüklenecek.
-isFreeze olan hesap login olamayacak. Bir modal ile engellendiği mesajı verilecek.
+kayıt olurken role seçme **Done**
+404 not found sayfasına geri dön butonu **Done**
+seller / staışlarım sayfasında yıllık satış empty yüklenecek. **Done**
+isFreeze olan hesap login olamayacak. Bir modal ile engellendiği mesajı verilecek. **Done**
 ProductCard yeniden yapılacak. **Done**
-Yorum ve iç içe yorum test edilecek.
-Nginx kurulumu.
+Yorum ve iç içe yorum test edilecek. **Done** **need detailed tested**
 çok satanlar içerisinde gelen rating yakalanacak. **Done**
+Tab ların renklerini ayarla
 
 BUG
-kullanıcı satın almadığı halde satın alanlardan yazısı çıkıyor.
+kullanıcı satın almadığı halde satın alanlardan yazısı çıkıyor. **fixed**
+
+Nginx kurulumu.
+Dropdown en yeniler sıralaması yapılacak.

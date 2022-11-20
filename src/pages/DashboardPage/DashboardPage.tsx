@@ -128,6 +128,7 @@ const DashboardPage: React.FC = () => {
         {
           key: 3,
           label: "En Yeniler",
+          onClick: () => handleSort("DESC","createdAt"),
         },
         {
           key: 4,

@@ -54,6 +54,8 @@ const Sales = () => {
     const getProduct = async () => {
       try {
         const { data } = await productService.getBestSaledProduct();
+        if(!data) return;
+        debugger;
         const convertedArray = convertHelper.convertBestSalesResponseToProducts(
           [data]
         );
@@ -151,7 +153,16 @@ const Sales = () => {
       </div>
       <div className="w-full sm:px-5 flex flex-row flex-wrap justify-around items-center">
         <div className="w-[750px]">
+          {salesYearlyData.length < 1 ? ((
+          <div className="w-full flex justify-center items-center">
+            <Empty
+              description="Bu yıl satışınız olmamış"
+              style={{ fontSize: "16px", fontWeight: "700" }}
+            />
+          </div>
+        )) : (
           <SalesYearlyChart chartDatas={salesYearlyData} />
+        ) }
         </div>
         <div className="relative mt-5 ml-5 lg:ml-0 overflow-hidden w-[300px] h-[100px] bg-white rounded-md shadow-md flex flex-row justify-around items-center">
           <div className="absolute z-0  w-[170px] bg-[#F1CBD7] h-[150px] -left-10 rounded-full " />

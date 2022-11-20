@@ -5,39 +5,43 @@ export const a = "";
 export const formDatas = {
   names: {
     firstName: {
-      label: "First Name",
+      label: "İsim",
       name: "firstName",
     },
     lastName: {
-      label: "Last Name",
+      label: "Soyisim",
       name: "lastName",
     },
+    username:{
+      label:"Kullanıcı Adı",
+      name:"username"
+    },
     email: {
-      label: "Email",
+      label: "Mail Adresi",
       name: "email",
     },
     role: {
-      label: "Role",
+      label: "Hesap Türü",
       name: "role",
     },
     password: {
-      label: "Password",
+      label: "Şifre",
       name: "password",
     },
   },
   rules: {
     firstName: {
-      message: "First Name is required!",
+      message: "İsim zorunlu!",
     },
     lastName: {
-      message: "First Name is required!",
+      message: "Soyisim zorun!",
     },
     email: {
-      message: "Email is required!",
-      typeMessage: "This is not a valid email!",
+      message: "Mail adresi zorunlu!",
+      typeMessage: "Geçersiz mail adresi!",
     },
     password: {
-      message: "Password is required!",
+      message: "Şifre alanı zorunlu!",
     },
   },
 };

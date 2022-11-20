@@ -105,6 +105,7 @@ const ProfilePage = () => {
               lastName: userState.user.lastName,
               email: userState.user.email,
               role: roleEnum.RoleText[userState.user.role as never],
+              username: userState.user.username,
             }}
             layout="vertical"
             onFinish={handleFinish}
@@ -137,6 +138,13 @@ const ProfilePage = () => {
               ]}
             >
               <Input />
+            </Form.Item>
+            
+            <Form.Item
+              label={formDatas.names.username.label}
+              name={formDatas.names.username.name}
+            >
+              <Input disabled />
             </Form.Item>
             <Form.Item
               label={formDatas.names.role.label}

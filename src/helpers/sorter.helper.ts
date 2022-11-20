@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const ascendingSortByNumberOrString = <T>(array: T[], key: string): T[] => {
   const sortedArray = array.slice().sort((a, b) => {
     let variable1 = (a as any)[key];
@@ -34,6 +36,16 @@ const descendingSortByNumberOrString = <T>(array: T[], key: string): T[] => {
   });
 };
 
+const descendingSortByDate = <T>(array: T[], key: string): T[] => {
+  return array
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date((b as any)[key] as Date).getTime() -
+        new Date((a as any)[key] as Date).getTime()
+    );
+};
+
 export const sorter = <T>(
   key: string,
   array: T[],
@@ -43,7 +55,9 @@ export const sorter = <T>(
     debugger;
     return ascendingSortByNumberOrString(array, key);
   } else {
-    debugger;
+    if (key === "createdAt") {
+      return descendingSortByDate(array, key);
+    }
     return descendingSortByNumberOrString(array, key);
   }
 };

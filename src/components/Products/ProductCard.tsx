@@ -22,7 +22,7 @@ type PropsType = {
 
 const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
+  
   const userState = useAppSelector((state) => state.user);
   const productState = useAppSelector((state) => state.product);
   const imgsrc = product.images && imageHelper.getBase64(product.images[0]);
