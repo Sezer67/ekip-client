@@ -55,7 +55,7 @@ const Product = () => {
   const size = useAppWindowSize();
 
   const ownerFullname = useMemo(() => {
-    if(!productState.selectedProduct.ownerId) return;
+    if (!productState.selectedProduct.ownerId) return;
     return (
       productState.selectedProduct.ownerId.firstName +
       " " +
@@ -105,7 +105,10 @@ const Product = () => {
       getProdutcsByCategories(categories);
     }
 
-    if (!productState.selectedProduct.id || !productState.selectedProduct.ownerId) {
+    if (
+      !productState.selectedProduct.id ||
+      !productState.selectedProduct.ownerId
+    ) {
       const productId = location.pathname.split("product/")[1];
       getProductById(productId);
     }
@@ -309,9 +312,13 @@ const Product = () => {
         {/* Images */}
         <div className="w-full my-4">
           {productState.selectedProduct.images &&
-            productState.selectedProduct.images.length > 0 && (
-              <ImagesView images={productState.selectedProduct.images} />
-            )}
+          productState.selectedProduct.images.length > 0 ? (
+            <ImagesView images={productState.selectedProduct.images} />
+          ) : (
+            <h1 className="italic text-red-400 text-lg">
+              Bu ürün için resim mevcut değil.
+            </h1>
+          )}
         </div>
         {/* Description - card */}
         <div className="w-full mt-8 flex flex-row justify-between flex-wrap">
@@ -343,7 +350,7 @@ const Product = () => {
                 </Button>
               )}
             </div>
-            <div className=" border  h-[1px] my-4 " />
+            <div className=" border-b  my-4 " />
             <div className="flex flex-col space-y-5">
               {productStatus.isTrend && (
                 <div className="flex flex-row items-center">
@@ -372,9 +379,7 @@ const Product = () => {
             </div>
             {(productStatus.isTrend ||
               productStatus.isNew ||
-              productStatus.isBestSale) && (
-              <div className=" border h-[1px] my-4 " />
-            )}
+              productStatus.isBestSale) && <div className=" border-b my-4 " />}
             {/* ait oldugu kategoriler */}
             <div>
               <h4 className="font-semibold text-base font-sans">
@@ -393,59 +398,13 @@ const Product = () => {
                 })}
               </div>
             </div>
-            <div className=" border  h-[1px] my-4 " />
+            <div className=" border-b  my-4 " />
             {/* ürün description */}
             <div>
               <h4 className="font-semibold text-base font-sans">
                 Ürün Hakkında
               </h4>
               <span>{productState.selectedProduct.description}</span>
-              <span>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure et
-                omnis, id ducimus quam, odio sint, ullam tenetur quasi libero
-                officiis blanditiis aperiam quae. Provident sapiente explicabo
-                totam eligendi recusandae. Lorem ipsum dolor sit amet
-                consectetur adipisicing elit. Aspernatur, necessitatibus magnam
-                odit adipisci inventore laboriosam quae, enim qui ad unde
-                repellat aut iusto. Quo blanditiis cupiditate incidunt dicta
-                laborum nihil? Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Nesciunt doloribus explicabo at recusandae
-                maxime tenetur molestiae, sit autem quae dolores optio, quam
-                maiores officia omnis eos enim magni assumenda ullam. Lorem
-                ipsum dolor sit amet consectetur adipisicing elit. Esse deleniti
-                tenetur aspernatur eaque beatae repellendus itaque nam amet
-                error minus qui provident animi corporis, earum molestias
-                perferendis sequi ipsum ea. Lorem ipsum dolor sit amet
-                consectetur adipisicing elit. Quo illo totam est quia nesciunt
-                tempore, inventore architecto possimus nulla pariatur animi
-                distinctio accusamus nostrum aliquid iure repellendus, beatae
-                dolore modi. Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Hic suscipit cumque aliquid? Explicabo a libero vitae et
-                tempora esse totam possimus ipsum, architecto, consectetur
-                aliquam, laboriosam nisi quidem labore fugit! Lorem ipsum, dolor
-                sit amet consectetur adipisicing elit. Cum voluptatem iure
-                pariatur sint, quidem placeat sed exercitationem molestias
-                harum, vel voluptate, id a delectus ducimus rem aut animi
-                maiores doloremque. Lorem, ipsum dolor sit amet consectetur
-                adipisicing elit. Enim illo quasi, laudantium, sunt cum eaque
-                nostrum commodi cupiditate nemo ducimus aperiam tempore,
-                quibusdam sit. Illo blanditiis cupiditate laborum aspernatur
-                minima! Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Provident maxime voluptatem atque, quam maiores commodi adipisci
-                dolore ipsum corrupti, quo doloribus cumque, corporis qui.
-                Molestias voluptas incidunt ex tenetur earum? Lorem, ipsum dolor
-                sit amet consectetur adipisicing elit. Magni odit soluta facere
-                in commodi pariatur voluptates, optio quasi neque tenetur beatae
-                doloremque fugiat quod sint animi ab incidunt cum sequi. Lorem
-                ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem,
-                provident consequuntur. Dicta veritatis quidem placeat.
-                Accusantium, perspiciatis sint quos tempore, a eos ab doloremque
-                itaque quis sapiente necessitatibus tenetur nemo. Lorem ipsum
-                dolor sit amet consectetur adipisicing elit. Et labore eligendi
-                ipsam maxime mollitia iure numquam minima, ab necessitatibus
-                earum aspernatur ex exercitationem similique tenetur animi atque
-                voluptas reprehenderit veritatis.
-              </span>
             </div>
           </div>
           <div id="order" className="w-full sm:w-1/3 ">
@@ -486,9 +445,10 @@ const Product = () => {
                 Sipariş Ver
               </Button>
               <span className="text-thirdy text-[.75rem]">
-                Satıcı onaylayana kadar ücretiniz bizde durur. Sipariş iptali/onaylanmama durumunda iade edilir.
+                Satıcı onaylayana kadar ücretiniz bizde durur. Sipariş
+                iptali/onaylanmama durumunda iade edilir.
               </span>
-              <div className=" border  h-[1px] my-4 " />
+              <div className=" border-b my-4 " />
               <span className="text-lg font-semibold">Tutar : </span>
               <span className="text-lg font-sans font-semibold">
                 {totalPrice} ₺
@@ -508,7 +468,7 @@ const Product = () => {
           </div>
         </div>
         {/* Yorum */}
-        <div className="w-full border h-[.1px]" />
+        <div className="w-full h-[.1px]" />
         <div className="w-full mt-5">
           <div className="flex flex-row items-center">
             {commentsVisible ? (

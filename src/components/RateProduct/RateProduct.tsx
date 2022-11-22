@@ -71,7 +71,7 @@ const RateProduct: React.FC<PropsType> = ({ setVisible, productId }) => {
         </p>
       </div>
       {/* Footer */}
-      <div className="w-full border h-[.1px]" />
+      <div className="w-full h-[.1px]" />
       <div className="w-full mt-4 px-5 flex flex-row justify-end">
         <Button onClick={handleClose} className="mr-3">
           Daha Sonra

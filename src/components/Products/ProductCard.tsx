@@ -22,7 +22,7 @@ type PropsType = {
 
 const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  
+
   const userState = useAppSelector((state) => state.user);
   const productState = useAppSelector((state) => state.product);
   const imgsrc = product.images && imageHelper.getBase64(product.images[0]);
@@ -98,7 +98,7 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
           alt="fav"
         />
       </div>
-      <div className="flex justify-center mb-1 w-full border-b">
+      <div className="flex h-[100px] justify-center mb-1 w-full border-b">
         {imgsrc ? (
           <img
             src={imgsrc}
@@ -115,7 +115,11 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
         <span className="text-orange font-semibold text-lg  cursor-pointer">
           {product.name}
         </span>
-        {product.ownerId ? (<span className="text-thirdy text-[.65rem] italic mb-2">{product.ownerId?.firstName.concat(" ",product.ownerId?.lastName)} tarafından</span>
+        {product.ownerId ? (
+          <span className="text-thirdy text-[.65rem] italic mb-2">
+            {product.ownerId?.firstName.concat(" ", product.ownerId?.lastName)}{" "}
+            tarafından
+          </span>
         ) : null}
         <div className="flex flex-row flex-wrap items-center justify-between">
           <span className="text-secondary font-semibold text-lg">
@@ -129,11 +133,17 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
         </div>
         <div className="flex flex-row items-center justify-between flex-wrap">
           <div className="flex flex-row items-center">
-            
-        <Rate allowHalf disabled defaultValue={product.ratingPoint} />
-        <span className="pt-1 ml-2 text-thirdy">({product.ratingCount})</span>
+            <Rate allowHalf disabled defaultValue={product.ratingPoint} />
+            <span className="pt-1 ml-2 text-thirdy">
+              ({product.ratingCount})
+            </span>
           </div>
-          <Button onClick={handleShow} className="hover:!bg-blue-400 hover:!text-light">Görüntüle</Button>
+          <Button
+            onClick={handleShow}
+            className="hover:!bg-blue-400 hover:!text-light"
+          >
+            Görüntüle
+          </Button>
         </div>
       </div>
     </div>
