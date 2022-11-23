@@ -1,5 +1,4 @@
 import { Button, Form, Input, Radio } from "antd";
-import FormItem from "antd/es/form/FormItem";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../enums/path.enum";
@@ -74,7 +73,7 @@ const RegisterPage: React.FC = () => {
               rules={[
                 {
                   required: true,
-                  message: errorMessages.required("Userame"),
+                  message: errorMessages.required("Kullanıcı Adı"),
                 },
               ]}
             >
@@ -96,15 +95,24 @@ const RegisterPage: React.FC = () => {
             >
               <Input size="middle" />
             </Form.Item>
-            <Form.Item label="Hesap Türü" name={FormValuesEnum.role} initialValue={Role.Customer} rules={[
+            <Form.Item
+              label="Hesap Türü"
+              name={FormValuesEnum.role}
+              initialValue={Role.Customer}
+              rules={[
                 {
                   required: true,
                   message: errorMessages.required("Hesap Türü"),
                 },
-              ]}>
+              ]}
+            >
               <Radio.Group optionType="button" buttonStyle="solid">
-                <Radio.Button value={Role.Customer}>{RoleText.customer}</Radio.Button>
-                <Radio.Button value={Role.Seller}>{RoleText.seller}</Radio.Button>
+                <Radio.Button value={Role.Customer}>
+                  {RoleText.customer}
+                </Radio.Button>
+                <Radio.Button value={Role.Seller}>
+                  {RoleText.seller}
+                </Radio.Button>
               </Radio.Group>
             </Form.Item>
             <Form.Item

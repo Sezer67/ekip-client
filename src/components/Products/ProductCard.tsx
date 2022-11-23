@@ -125,7 +125,7 @@ const ProductCard: React.FC<PropsType> = ({ product, editable }) => {
           <span className="text-secondary font-semibold text-lg">
             {product.price} ₺
           </span>
-          {product.stock < 50 && (
+          {product.stock < 20 && (
             <span className="text-thirdy text-xs">
               Kalan Stok: {product.stock}
             </span>
